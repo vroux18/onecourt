@@ -126,8 +126,8 @@ select.chip{appearance:none;-webkit-appearance:none;padding-right:28px;backgroun
 /* bottom sheet */
 .sheet{background:#10171a;border-top:1px solid var(--line);border-radius:26px 26px 0 0;padding:18px 22px calc(26px + env(safe-area-inset-bottom,0px));max-height:52%;overflow-y:auto}
 .sheet .grab{width:38px;height:4px;border-radius:2px;background:#2a3236;margin:0 auto 14px}
-.sheet-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
-.sheet-name{font-weight:800;font-size:19px}
+.sheet-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;border-top:1px solid var(--line);padding-top:14px;margin-top:16px}
+.sheet-name{font-weight:800;font-size:16px}
 .sheet-dist{font-weight:700;font-size:11.5px;color:var(--a);flex:none}
 .sheet-meta{font-size:10.5px;color:var(--ink-dim);margin-top:3px}
 /* directions — rangée centrée flottant au-dessus du bandeau */
@@ -467,11 +467,6 @@ function renderMap(){
   // bottom sheet
   var sheet=document.getElementById('sheet');sheet.textContent='';
   sheet.appendChild(el('div','grab'));
-  var head=el('div','sheet-head');
-  head.appendChild(el('span','sheet-name',selSite.name));
-  head.appendChild(el('span','sheet-dist',distLabel(selSite)));
-  sheet.appendChild(head);
-  sheet.appendChild(el('div','sheet-meta',(selSite.adresse||'')+(selSite.cp?' · '+selSite.cp:'')));
   // trajets : rangée centrée au-dessus du bandeau
   var modes=document.getElementById('modesbar');modes.textContent='';
   var km=siteKm(selSite),times=modeTimes(km);
@@ -482,18 +477,8 @@ function renderMap(){
     a.appendChild(el('span','tm',times?times[m[0]]:'—'));
     modes.appendChild(a);
   });
-  var g=el('a','gmaps','Ouvrir dans Google Maps ↗');
-  g.href=gmapsUrl(selSite,null);g.target='_blank';g.rel='noopener';
-  sheet.appendChild(g);
-  if(!pos){
-    sheet.appendChild(el('div','geo-hint',posTried
-      ?'Position indisponible — les temps de trajet s’afficheront si tu autorises la localisation.'
-      :'Autorise la localisation pour voir les temps de trajet.'));
-  }else{
-    sheet.appendChild(el('div','geo-hint','Temps estimés à vol d’oiseau — l’itinéraire exact est dans Google Maps.'));
-  }
-  // créneaux groupés par heure
-  var rows=el('div','rows');
+  // créneaux d'abord, groupés par heure
+  var rows=el('div','rows');rows.style.marginTop='0';
   var ss=agg.bySite[selId],byHour={};
   ss.forEach(function(s){(byHour[s.h]=byHour[s.h]||[]).push(s);});
   var isPadel=state.sport==='padel';
@@ -520,6 +505,20 @@ function renderMap(){
     rows.appendChild(row);
   });
   sheet.appendChild(rows);
+  // nom du terrain + adresse en dessous de la liste
+  var head=el('div','sheet-head');
+  head.appendChild(el('span','sheet-name',selSite.name));
+  head.appendChild(el('span','sheet-dist',distLabel(selSite)));
+  sheet.appendChild(head);
+  sheet.appendChild(el('div','sheet-meta',(selSite.adresse||'')+(selSite.cp?' · '+selSite.cp:'')));
+  var g=el('a','gmaps','Ouvrir dans Google Maps ↗');
+  g.href=gmapsUrl(selSite,null);g.target='_blank';g.rel='noopener';
+  sheet.appendChild(g);
+  if(!pos){
+    sheet.appendChild(el('div','geo-hint',posTried
+      ?'Position indisponible — les temps de trajet s’afficheront si tu autorises la localisation.'
+      :'Autorise la localisation pour voir les temps de trajet.'));
+  }
   sheet.appendChild(el('div','sheet-note',NOTE[state.sport]||''));
 }
 document.getElementById('mapback').addEventListener('click',closeMap);

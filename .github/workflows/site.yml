@@ -1,0 +1,61 @@
+name: Site
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 5 * * *'   # ~7h Paris : refresh des données puis redéploiement
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  site:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        if: github.event_name != 'push'
+        with:
+          python-version: '3.12'
+
+      # Refresh quotidien : les scrapers écrivent dans app/. En cas d'échec,
+      # l'ancien fichier reste en place (garde-fou validé ci-dessous).
+      - name: Refresh données (schedule)
+        if: github.event_name != 'push'
+        working-directory: app
+        run: |
+          python ../scrapers/tennis_paris.py || echo "::warning::scrape tennis en échec, données conservées"
+          python ../scrapers/anybuddy_padel.py || echo "::warning::scrape padel en échec, données conservées"
+
+      - name: Garde-fou données tennis
+        if: github.event_name != 'push'
+        run: python -c "import json; d=json.load(open('app/data.json')); assert d.get('total',0)>0, 'data.json vide'"
+
+      - name: Commit données rafraîchies
+        if: github.event_name != 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app/data.json app/padel.json
+          git diff --cached --quiet || { git commit -m "data: refresh $(date -u +%F)"; git push; }
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: app
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
