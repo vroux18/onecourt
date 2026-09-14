@@ -103,7 +103,7 @@ body.maplock{overflow:hidden}
 .day .lbl{font-weight:700;font-size:10px;color:var(--ink-soft)}
 .day.sel .num,.day.sel .lbl{color:var(--a)}
 /* hour chips */
-.hours{display:flex;gap:7px;margin-top:8px;overflow-x:auto;margin-inline:-22px;padding:4px 22px;align-items:center;scrollbar-width:none}
+.hours{display:flex;gap:7px;margin-top:8px;overflow-x:auto;margin-inline:-22px;padding:8px 22px;align-items:center;scrollbar-width:none;position:sticky;top:0;z-index:30;background:var(--bg)}
 .hchip{flex:none;display:flex;flex-direction:column;align-items:center;gap:4px;background:#12171a;border:1px solid var(--line);border-radius:16px;padding:9px 13px 7px;cursor:pointer;transition:background .25s;font-family:inherit}
 .hchip .t{font-weight:600;font-size:13px;color:#e7efe9;white-space:nowrap}
 .hchip.none .t{color:#4a534e}
@@ -395,7 +395,7 @@ function renderDays(){
     ring.appendChild(core);
     b.appendChild(ring);
     b.appendChild(el('span','lbl',DOWU[d.getDay()]));
-    b.addEventListener('click',function(){state.day=day;state.hour=null;state.mapClub=null;render();});
+    b.addEventListener('click',function(){state.day=day;state.mapClub=null;render();});
     nav.appendChild(b);
   });
 }
