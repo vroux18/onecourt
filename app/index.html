@@ -40,6 +40,34 @@ body.maplock{overflow:hidden}
 #glow1{top:-100px;left:-60px;width:320px;height:320px;background:radial-gradient(circle,var(--g1),transparent 66%)}
 #glow2{bottom:-80px;right:-80px;width:280px;height:280px;background:radial-gradient(circle,var(--g2),transparent 66%)}
 .wrap{max-width:430px;margin:0 auto;position:relative;z-index:1}
+/* mini-bandeau installation */
+.a2hs{position:relative;z-index:2;max-width:430px;margin:0 auto 10px;display:flex;align-items:center;gap:8px;font-size:10px;line-height:1.4;color:var(--ink-dim);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 10px}
+.a2hs b{color:var(--ink-soft);font-weight:700}
+.a2hs button{background:none;border:none;color:var(--ink-dim);cursor:pointer;padding:0 2px;font-size:11px;margin-left:auto;font-family:inherit;flex:none}
+/* ===== home ===== */
+.homeview{position:relative;z-index:1;max-width:430px;margin:0 auto;min-height:calc(100dvh - 66px - env(safe-area-inset-top,0px));display:flex;flex-direction:column;justify-content:center}
+.home-brand{font-weight:800;font-size:34px;letter-spacing:-1px}
+.home-brand .dot{color:var(--a)}
+.home-date{font-weight:500;font-size:13px;color:var(--ink-soft);margin-top:6px;text-transform:capitalize}
+.home-title{font-weight:800;font-size:30px;line-height:1.15;letter-spacing:-1px;margin:26px 0 0}
+.home-cards{display:flex;flex-direction:column;gap:12px;margin-top:24px}
+.home-card{display:flex;align-items:center;gap:14px;background:var(--card);backdrop-filter:blur(10px);border-radius:22px;padding:16px;cursor:pointer;text-align:left;font-family:inherit;color:var(--ink);width:100%}
+.home-card .ic{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex:none}
+.home-card .mid{flex:1;min-width:0}
+.home-card .nm{font-weight:800;font-size:17px}
+.home-card .ct{font-weight:600;font-size:11.5px;margin-top:2px}
+.home-card .ar{font-weight:800;font-size:16px;flex:none}
+.home-card.off{opacity:.65}
+.home-sub{font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim);margin-top:26px}
+.home-days{display:flex;gap:8px;overflow-x:auto;margin-top:10px;margin-inline:-22px;padding:4px 22px;scrollbar-width:none}
+.hday{flex:none;width:62px;background:#141619;border:1px solid var(--line);border-radius:16px;padding:10px 0;text-align:center;cursor:pointer;font-family:inherit;color:var(--ink)}
+.hday .dw{font-weight:600;font-size:10px;color:var(--ink-soft)}
+.hday .n{font-weight:700;font-size:20px;line-height:1.2}
+.hday.sel{background:var(--a);border-color:var(--a)}
+.hday.sel .dw{color:color-mix(in srgb,var(--a-dark) 80%,transparent)}
+.hday.sel .n{color:var(--a-dark);font-weight:800}
+.home-foot{font-size:11px;color:var(--ink-dim);margin-top:26px;text-align:center}
+.wordmark{cursor:pointer}
 /* header */
 .top{display:flex;justify-content:space-between;align-items:center}
 .wordmark{font-weight:800;font-size:21px;letter-spacing:-.5px}
@@ -147,12 +175,34 @@ select.chip{appearance:none;-webkit-appearance:none;padding-right:28px;backgroun
 .row .pr{font-weight:700;font-size:12.5px;color:var(--chip-ink);flex:none}
 .row .book{font-weight:800;font-size:11px;background:var(--a);color:var(--a-dark);border-radius:99px;padding:8px 13px;white-space:nowrap;text-decoration:none;flex:none}
 .sheet-note{font-size:10px;color:var(--ink-dim);margin-top:12px}
-button:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--a);outline-offset:2px}
+/* origine (géoloc / adresse) */
+.originbtn{position:fixed;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:55;display:flex;align-items:center;gap:6px;background:#12171add;border:1px solid var(--line);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-radius:99px;padding:10px 14px;font-weight:700;font-size:11.5px;color:var(--ink);cursor:pointer;font-family:inherit;max-width:60vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.originpanel{position:fixed;inset:0;z-index:70;background:#000a;display:flex;flex-direction:column;justify-content:flex-end}
+.originsheet{background:#10171a;border-top:1px solid var(--line);border-radius:26px 26px 0 0;padding:18px 22px calc(26px + env(safe-area-inset-bottom,0px))}
+.originsheet .grab{width:38px;height:4px;border-radius:2px;background:#2a3236;margin:0 auto 14px}
+.originsheet h2{font-weight:800;font-size:17px;margin:0}
+.origin-geo{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;background:var(--a);color:var(--a-dark);border:none;border-radius:14px;padding:12px;font-weight:800;font-size:12.5px;cursor:pointer;font-family:inherit;width:100%}
+.origin-row{display:flex;gap:8px;margin-top:10px}
+.origin-row input{flex:1;min-width:0;background:var(--chip-bg);border:1px solid var(--chip-border);border-radius:14px;padding:12px 14px;color:var(--ink);font-family:inherit;font-size:13px}
+.origin-row input::placeholder{color:var(--ink-dim)}
+.origin-row button{background:var(--chip-bg);border:1px solid var(--chip-border);border-radius:14px;padding:12px 16px;color:var(--ink);font-weight:800;font-size:12.5px;cursor:pointer;font-family:inherit}
+.origin-hint{font-size:10.5px;color:var(--ink-dim);margin-top:10px}
+button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--a);outline-offset:2px}
 </style>
 </head><body>
 <div class="glow" id="glow1"></div>
 <div class="glow" id="glow2"></div>
-<div class="wrap">
+<div class="a2hs" id="a2hs" hidden><span>💡 Ajoute l’app à ton écran d’accueil : <b>Partager → « Sur l’écran d’accueil »</b></span><button id="a2hsX" type="button" aria-label="Fermer">✕</button></div>
+<div class="homeview" id="homeview" hidden>
+  <div class="home-brand">onecourt<span class="dot">.</span></div>
+  <div class="home-date" id="homeDate"></div>
+  <h1 class="home-title">Ça joue où ?</h1>
+  <div class="home-cards" id="homeCards"></div>
+  <div class="home-sub">Prochains jours</div>
+  <div class="home-days" id="homeDays"></div>
+  <div class="home-foot" id="homeFoot"></div>
+</div>
+<div class="wrap" id="app">
   <div class="top">
     <span class="wordmark">onecourt<span class="dot">.</span></span>
     <span class="live" id="live" hidden><span class="halo"><span class="pt"></span></span><span class="tag" id="liveTag">LIVE</span><span class="hm" id="liveHm"></span></span>
@@ -167,11 +217,24 @@ button:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(
   <nav class="days" id="days" aria-label="Choix du jour"></nav>
   <nav class="hours" id="hours" aria-label="Choix de l'heure"></nav>
   <div class="filters" id="filters">
-    <select class="chip" id="fArr" aria-label="Arrondissement"><option value="">Tous les arr.</option></select>
+    <button class="chip" id="fNear" type="button">📍 Le plus proche</button>
     <button class="chip" id="fCov" type="button">Couvert</button>
   </div>
   <div class="meta-line" id="metaLine"></div>
   <main id="list" class="clubs"></main>
+</div>
+<button class="originbtn" id="originbtn" type="button">📍 Ma position</button>
+<div class="originpanel" id="originpanel" hidden>
+  <div class="originsheet">
+    <div class="grab"></div>
+    <h2>D’où pars-tu ?</h2>
+    <button class="origin-geo" id="originGeo" type="button">📍 Me géolocaliser</button>
+    <div class="origin-row">
+      <input id="originInput" type="text" placeholder="Ou entre une adresse…" autocomplete="street-address">
+      <button id="originOk" type="button">OK</button>
+    </div>
+    <div class="origin-hint" id="originHint">Les distances et temps de trajet seront calculés depuis ce point.</div>
+  </div>
 </div>
 <div class="mapview" id="mapview" hidden>
   <div class="mapcanvas" id="mapcanvas">
@@ -187,8 +250,10 @@ button:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(
 (function(){
 'use strict';
 var DS={tennis:null,padel:null,foot:null};
-var state={day:null,sport:'tennis',hour:null,arr:'',cov:false,mapClub:null};
-var pos=null,posTried=false;
+var state={view:'home',day:null,sport:'tennis',hour:null,near:false,cov:false,mapClub:null};
+var SPORTMETA={tennis:{label:'Tennis',emoji:'🎾'},padel:{label:'Padel',emoji:'🏓'},foot:{label:'Foot',emoji:'⚽'}};
+var homeDay=null;
+var pos=null,posTried=false,origin={src:null,label:null};
 var DOW=['dim.','lun.','mar.','mer.','jeu.','ven.','sam.'];
 var DOWU=['DIM','LUN','MAR','MER','JEU','VEN','SAM'];
 var MONTHS=['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
@@ -202,9 +267,14 @@ var NOTE={tennis:'Réservation sur tennis.paris.fr — compte Mon Paris requis.'
   padel:'Réservation via Anybuddy — prix par piste.'};
 
 try{var saved=JSON.parse(localStorage.getItem('onecourt')||'{}');
-  ['arr','cov','sport'].forEach(function(k){if(k in saved)state[k]=saved[k];});
+  ['near','cov','sport'].forEach(function(k){if(k in saved)state[k]=saved[k];});
+  if(saved.org&&saved.org.lat){pos={lat:saved.org.lat,lng:saved.org.lng};origin={src:'addr',label:saved.org.label};posTried=true;}
 }catch(e){}
-function persist(){try{localStorage.setItem('onecourt',JSON.stringify({arr:state.arr,cov:state.cov,sport:state.sport}));}catch(e){}}
+function persist(){try{
+  var o={near:state.near,cov:state.cov,sport:state.sport};
+  if(origin.src==='addr'&&pos)o.org={lat:pos.lat,lng:pos.lng,label:origin.label};
+  localStorage.setItem('onecourt',JSON.stringify(o));
+}catch(e){}}
 
 function ds(){return DS[state.sport];}
 function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
@@ -248,8 +318,17 @@ function requestPos(cb){
   if(pos||posTried&&!navigator.geolocation)return cb&&cb();
   if(!navigator.geolocation){posTried=true;return cb&&cb();}
   navigator.geolocation.getCurrentPosition(function(p){
-    pos={lat:p.coords.latitude,lng:p.coords.longitude};posTried=true;cb&&cb();
+    pos={lat:p.coords.latitude,lng:p.coords.longitude};origin={src:'geo',label:'Ma position'};posTried=true;cb&&cb();
   },function(){posTried=true;cb&&cb();},{maximumAge:600000,timeout:8000});
+}
+function geocode(q,cb){
+  fetch('https://api-adresse.data.gouv.fr/search/?q='+encodeURIComponent(q)+'&limit=1')
+    .then(function(r){return r.json();})
+    .then(function(j){
+      var f=j.features&&j.features[0];
+      if(!f)return cb(null);
+      cb({lat:f.geometry.coordinates[1],lng:f.geometry.coordinates[0],label:f.properties.label});
+    }).catch(function(){cb(null);});
 }
 function gmapsUrl(site,mode){
   var u='https://www.google.com/maps/dir/?api=1&destination='+site.lat+','+siteLng(site);
@@ -261,8 +340,6 @@ function gmapsUrl(site,mode){
 function filteredSlots(day,ignoreHour){
   var out=[],D=ds();if(!D)return out;
   (D.slots[day]||[]).forEach(function(s){
-    var site=D.sites[s.s];
-    if(state.arr!=='' && String(site.arr)!==state.arr)return;
     if(state.cov && !s.cov)return;
     if(!ignoreHour && state.hour!=null && s.h!==state.hour)return;
     out.push(s);
@@ -329,8 +406,10 @@ function renderHours(){
   var base=filteredSlots(state.day,true);
   var counts={};base.forEach(function(s){counts[s.h]=(counts[s.h]||0)+1;});
   var max=Math.max.apply(null,Object.keys(counts).map(function(k){return counts[k];}).concat([1]));
+  // soir d'abord (18h→22h), puis le matin et l'après-midi
   var opts=[{label:'Tout',h:null}];
-  for(var i=8;i<=22;i++)opts.push({label:i+'h',h:i});
+  for(var i=18;i<=22;i++)opts.push({label:i+'h',h:i});
+  for(var j=8;j<=17;j++)opts.push({label:j+'h',h:j});
   opts.forEach(function(o){
     var sel=state.hour===o.h;
     var n=o.h==null?max:(counts[o.h]||0);
@@ -352,8 +431,10 @@ function siteAgg(){
   slots.forEach(function(s){(bySite[s.s]=bySite[s.s]||[]).push(s);});
   var ids=Object.keys(bySite).map(Number);
   ids.sort(function(a,b){
-    var ka=siteKm(D.sites[a]),kb=siteKm(D.sites[b]);
-    if(ka!=null&&kb!=null)return ka-kb;
+    if(state.near){
+      var ka=siteKm(D.sites[a]),kb=siteKm(D.sites[b]);
+      if(ka!=null&&kb!=null)return ka-kb;
+    }
     var Aa=D.sites[a],Bb=D.sites[b];
     return (Aa.arr-Bb.arr)||Aa.name.localeCompare(Bb.name);
   });
@@ -386,7 +467,7 @@ function renderList(){
     em.appendChild(document.createTextNode('Aucun créneau avec ces filtres.'));
     em.appendChild(document.createElement('br'));
     var rst=el('button','reset','Réinitialiser');rst.type='button';
-    rst.addEventListener('click',function(){state.arr='';state.cov=false;state.hour=null;render();});
+    rst.addEventListener('click',function(){state.cov=false;state.hour=null;render();});
     em.appendChild(rst);
     list.appendChild(em);
     return;
@@ -397,14 +478,15 @@ function renderList(){
     var card=el('button','club');card.type='button';
     var head=el('div','club-head');
     head.appendChild(el('span','club-name',site.name));
-    head.appendChild(el('span','club-dist',distLabel(site)));
+    head.appendChild(el('span','club-dist',site.arr>0&&site.arr<=20?site.arr+'ᵉ':'Hors Paris'));
     card.appendChild(head);
     var surfs={};ss.forEach(function(s){if(s.surf&&s.surf!=='Padel')surfs[s.surf.toLowerCase()]=1;});
-    var bits=[site.adresse||''];
+    var bits=[];
+    var kmm=siteKm(site);if(kmm!=null)bits.push('à '+fmtKm(kmm));
     var sk=Object.keys(surfs);if(sk.length)bits.push(sk.join(' / '));
     if(ss.some(function(s){return s.cov;}))bits.push('couvert');
     if(ss.some(function(s){return s.ecl;}))bits.push('éclairé');
-    card.appendChild(el('div','club-meta',bits.filter(Boolean).join(' · ')));
+    card.appendChild(el('div','club-meta',bits.filter(Boolean).join(' · ')||' '));
     var hrs=ss.map(function(s){return s.h;});
     var min=Math.min.apply(null,hrs),max=Math.max.apply(null,hrs)+1;
     var a=Math.max(0,(min-8)/14*100),b=Math.min(100,(max-8)/14*100);
@@ -530,21 +612,10 @@ function renderFilters(){
   f.hidden=!ds();
   document.getElementById('fCov').hidden=state.sport!=='tennis';
   document.getElementById('fCov').classList.toggle('on',state.cov);
-  document.getElementById('fArr').value=state.arr;
+  var fn=document.getElementById('fNear');
+  fn.classList.toggle('on',state.near&&!!pos);
+  fn.textContent=state.near&&posTried&&!pos?'📍 Position refusée':'📍 Le plus proche';
   document.getElementById('metaLine').hidden=!ds();
-}
-
-function rebuildArrOptions(){
-  var D=ds(),fa=document.getElementById('fArr');
-  fa.length=1;
-  if(!D)return;
-  var arrs={};
-  D.days.forEach(function(d){(D.slots[d]||[]).forEach(function(s){arrs[D.sites[s.s].arr]=1;});});
-  Object.keys(arrs).map(Number).sort(function(a,b){return a-b;}).forEach(function(a){
-    var o=document.createElement('option');o.value=String(a);
-    o.textContent=a>0&&a<=20?a+'ᵉ arr.':'Hors Paris';fa.appendChild(o);
-  });
-  if(state.arr!==''&&!arrs[state.arr])state.arr='';
 }
 
 function renderTabs(){
@@ -557,17 +628,108 @@ function renderTabs(){
   });
 }
 
-function render(){applyAccent();renderLive();renderHero();renderDays();renderHours();renderFilters();renderList();renderTabs();renderMap();persist();}
+function renderHome(){
+  var hv=document.getElementById('homeview');
+  var home=state.view==='home';
+  hv.hidden=!home;
+  document.getElementById('app').hidden=home;
+  if(!home)return;
+  var now=new Date();
+  document.getElementById('homeDate').textContent=now.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+  var cards=document.getElementById('homeCards');cards.textContent='';
+  ['tennis','padel','foot'].forEach(function(sp){
+    var D=DS[sp],c=A[sp],m=SPORTMETA[sp];
+    var today=D?(D.slots[D.days[0]]||[]).length:0;
+    var b=el('button','home-card'+(D?'':' off'));b.type='button';
+    b.style.border='1px solid '+c.a+'44';
+    var ic=el('span','ic',m.emoji);ic.style.background=c.a+'12';
+    b.appendChild(ic);
+    var mid=el('span','mid');
+    mid.appendChild(el('span','nm',m.label));
+    var ct=el('div','ct',D?(today>0?today+' créneaux aujourd’hui':(D.total||0)+' créneaux cette semaine'):'bientôt disponible');
+    ct.style.color=c.a;
+    mid.appendChild(ct);
+    b.appendChild(mid);
+    var ar=el('span','ar','→');ar.style.color=c.a;
+    b.appendChild(ar);
+    b.addEventListener('click',function(){
+      state.sport=sp;state.hour=null;state.mapClub=null;
+      var DD=ds();
+      state.day=DD?(DD.days.indexOf(homeDay)>=0&&(DD.slots[homeDay]||[]).length?homeDay:(DD.days.find(function(day){return (DD.slots[day]||[]).length>0;})||DD.days[0])):null;
+      state.view='list';render();
+      window.scrollTo(0,0);
+    });
+    cards.appendChild(b);
+  });
+  // prochains jours (jours du dump tennis, sinon padel)
+  var days=(DS.tennis&&DS.tennis.days)||(DS.padel&&DS.padel.days)||[];
+  if(homeDay==null||days.indexOf(homeDay)<0)homeDay=days[0]||null;
+  var hd=document.getElementById('homeDays');hd.textContent='';
+  days.forEach(function(day){
+    var d=new Date(day+'T12:00:00');
+    var b=el('button','hday'+(day===homeDay?' sel':''));b.type='button';
+    b.appendChild(el('div','dw',DOWU[d.getDay()]));
+    b.appendChild(el('div','n',String(d.getDate())));
+    b.addEventListener('click',function(){homeDay=day;renderHome();});
+    hd.appendChild(b);
+  });
+  var ft=document.getElementById('homeFoot');
+  ft.textContent=DS.tennis&&DS.tennis.generated_at
+    ?'Dispo en direct · mise à jour '+new Date(DS.tennis.generated_at).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})
+    :'';
+}
+
+function render(){applyAccent();renderHome();renderLive();renderHero();renderDays();renderHours();renderFilters();renderList();renderTabs();renderMap();renderOrigin();persist();}
 
 function switchSport(sp){
   if(sp===state.sport)return;
-  state.sport=sp;state.arr='';state.hour=null;state.mapClub=null;
+  state.sport=sp;state.hour=null;state.mapClub=null;
   var D=ds();
   state.day=D?(D.days.find(function(day){return (D.slots[day]||[]).length>0;})||D.days[0]):null;
-  rebuildArrOptions();render();
+  render();
 }
 
-document.getElementById('fArr').addEventListener('change',function(){state.arr=this.value;state.mapClub=null;render();});
+document.querySelector('.wordmark').addEventListener('click',function(){state.view='home';state.mapClub=null;render();window.scrollTo(0,0);});
+// origine : géoloc ou adresse
+function renderOrigin(){
+  document.getElementById('originbtn').textContent='📍 '+(pos?(origin.label||'Ma position'):'Ma position');
+}
+document.getElementById('originbtn').addEventListener('click',function(){
+  document.getElementById('originpanel').hidden=false;
+  document.getElementById('originHint').textContent='Les distances et temps de trajet seront calculés depuis ce point.';
+});
+document.getElementById('originpanel').addEventListener('click',function(e){
+  if(e.target===this)this.hidden=true;
+});
+document.getElementById('originGeo').addEventListener('click',function(){
+  var hint=document.getElementById('originHint');
+  if(!navigator.geolocation){hint.textContent='Géolocalisation non disponible sur cet appareil.';return;}
+  hint.textContent='Localisation…';
+  navigator.geolocation.getCurrentPosition(function(p){
+    pos={lat:p.coords.latitude,lng:p.coords.longitude};origin={src:'geo',label:'Ma position'};posTried=true;
+    document.getElementById('originpanel').hidden=true;render();
+  },function(){hint.textContent='Position refusée — autorise la localisation ou entre une adresse.';posTried=true;},
+  {maximumAge:60000,timeout:10000});
+});
+document.getElementById('originOk').addEventListener('click',function(){
+  var q=document.getElementById('originInput').value.trim();
+  var hint=document.getElementById('originHint');
+  if(!q)return;
+  hint.textContent='Recherche…';
+  geocode(q,function(r){
+    if(!r){hint.textContent='Adresse introuvable — essaie avec la ville (ex. "12 rue Oberkampf Paris").';return;}
+    pos={lat:r.lat,lng:r.lng};origin={src:'addr',label:r.label};posTried=true;
+    document.getElementById('originpanel').hidden=true;render();
+  });
+});
+document.getElementById('originInput').addEventListener('keydown',function(e){
+  if(e.key==='Enter')document.getElementById('originOk').click();
+});
+document.getElementById('fNear').addEventListener('click',function(){
+  state.near=!state.near;
+  if(state.near&&!pos)requestPos(function(){render();});
+  render();
+});
 document.getElementById('fCov').addEventListener('click',function(){state.cov=!state.cov;render();});
 document.querySelectorAll('.tab').forEach(function(b){
   b.addEventListener('click',function(){switchSport(b.getAttribute('data-sport'));});
@@ -577,6 +739,17 @@ if('serviceWorker' in navigator){
   try{navigator.serviceWorker.register('sw.js').catch(function(){});}catch(e){}
 }
 
+// mini-bandeau "ajouter à l'écran d'accueil" (masqué une fois installée ou fermée)
+(function(){
+  var standalone=(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||window.navigator.standalone;
+  var seen=false;try{seen=localStorage.getItem('onecourt_a2hs')==='1';}catch(e){}
+  var b=document.getElementById('a2hs');
+  if(!standalone&&!seen)b.hidden=false;
+  document.getElementById('a2hsX').addEventListener('click',function(){
+    b.hidden=true;try{localStorage.setItem('onecourt_a2hs','1');}catch(e){}
+  });
+})();
+
 function loadJSON(path){return fetch(path,{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
 
 Promise.all([loadJSON('data.json'),loadJSON('padel.json'),loadJSON('foot.json')]).then(function(res){
@@ -584,7 +757,6 @@ Promise.all([loadJSON('data.json'),loadJSON('padel.json'),loadJSON('foot.json')]
   if(!DS[state.sport]&&state.sport!=='foot')state.sport='tennis';
   var D=ds();
   state.day=D?(D.days.find(function(day){return (D.slots[day]||[]).length>0;})||D.days[0]):null;
-  rebuildArrOptions();
   render();
   // géoloc en tâche de fond pour afficher les distances sur les cartes
   requestPos(function(){if(pos)render();});
