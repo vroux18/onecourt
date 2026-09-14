@@ -302,8 +302,8 @@ function fmtKm(km){
   return km<1?Math.round(km*100)*10+' m':(Math.round(km*10)/10).toLocaleString('fr-FR')+' km';
 }
 function fmtMin(min){
-  if(min>=60){var h=Math.floor(min/60);return '~'+h+' h '+(Math.round(min-h*60)||'')+(min%60?' min':'');}
-  return '~'+Math.round(min)+' min';
+  if(min>=60){var h=Math.floor(min/60);return h+' h '+(Math.round(min-h*60)||'')+(min%60?' min':'');}
+  return Math.round(min)+' min';
 }
 /* durées estimées à vol d'oiseau corrigé (pas un vrai routage) */
 function modeTimes(km){
