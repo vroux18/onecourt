@@ -1,5 +1,5 @@
 /* OneCourt service worker — shell en cache, données réseau d'abord. */
-var CACHE = 'onecourt-v1';
+var CACHE = 'onecourt-v2';
 var SHELL = ['./', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', function (e) {
@@ -22,8 +22,9 @@ self.addEventListener('fetch', function (e) {
   var url = new URL(req.url);
   if (url.origin !== location.origin) return;
   var isData = /\.json$/.test(url.pathname);
-  if (isData) {
-    // données : réseau d'abord, cache en secours (mode hors-ligne)
+  var isPage = req.mode === 'navigate' || req.destination === 'document';
+  if (isData || isPage) {
+    // page et données : réseau d'abord, cache en secours (mode hors-ligne)
     e.respondWith(
       fetch(req).then(function (res) {
         if (res.ok) {

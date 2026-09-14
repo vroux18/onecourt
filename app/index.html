@@ -29,10 +29,13 @@ body{
   font-family:'Sora',system-ui,-apple-system,sans-serif;
   font-size:14px;line-height:1.45;
   padding-inline:22px;
-  padding-block:calc(26px + env(safe-area-inset-top,0px)) calc(130px + env(safe-area-inset-bottom,0px));
+  padding-block:calc(26px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px));
   overflow-x:hidden;
 }
+body.maplock{overflow:hidden}
 ::-webkit-scrollbar{display:none}
+@keyframes ocdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.75)}}
+@keyframes ocpulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.25)}70%{box-shadow:0 0 0 14px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
 .glow{position:fixed;border-radius:50%;pointer-events:none;transition:background .5s;z-index:0}
 #glow1{top:-100px;left:-60px;width:320px;height:320px;background:radial-gradient(circle,var(--g1),transparent 66%)}
 #glow2{bottom:-80px;right:-80px;width:280px;height:280px;background:radial-gradient(circle,var(--g2),transparent 66%)}
@@ -41,46 +44,64 @@ body{
 .top{display:flex;justify-content:space-between;align-items:center}
 .wordmark{font-weight:800;font-size:21px;letter-spacing:-.5px}
 .wordmark .dot{color:var(--a);transition:color .4s}
-.maj{font-weight:700;font-size:10.5px;color:var(--a);border:1px solid var(--a-border);border-radius:99px;padding:5px 11px;background:var(--a-bg);white-space:nowrap}
-.maj.stale{color:var(--warn);border-color:var(--warn-border);background:var(--warn-bg)}
+.live{display:inline-flex;align-items:center;gap:7px;background:#12171acc;border:1px solid var(--line);backdrop-filter:blur(10px);border-radius:99px;padding:6px 12px 6px 8px}
+.live .halo{position:relative;width:16px;height:16px;border-radius:50%;background:var(--a-bg);display:inline-flex;align-items:center;justify-content:center}
+.live .pt{width:6px;height:6px;border-radius:50%;background:var(--a);box-shadow:0 0 8px var(--a);animation:ocdot 1.8s ease-in-out infinite}
+.live .tag{font-weight:800;font-size:10px;letter-spacing:1px;color:var(--a)}
+.live .hm{font-weight:600;font-size:10.5px;color:#8b968f;border-left:1px solid var(--line);padding-left:7px}
+.live.stale .pt{background:var(--warn);box-shadow:0 0 8px var(--warn)}
+.live.stale .halo{background:var(--warn-bg)}
+.live.stale .tag{color:var(--warn)}
+/* segmented tabs */
+.tabs{display:flex;gap:5px;margin-top:18px;background:#12171a;border:1px solid var(--line);border-radius:20px;padding:5px}
+.tab{flex:1;background:transparent;border:none;border-radius:15px;padding:9px 0 7px;text-align:center;cursor:pointer;transition:background .3s;font-family:inherit}
+.tab .lbl{font-weight:800;font-size:13px;color:var(--ink-soft)}
+.tab .cnt{font-weight:600;font-size:9px;color:var(--ink-dim)}
+.tab.on{background:var(--a)}
+.tab.on .lbl{color:var(--a-dark)}
+.tab.on .cnt{color:color-mix(in srgb,var(--a-dark) 80%,transparent)}
 /* hero */
-.hero{margin-top:20px;font-weight:800;font-size:36px;line-height:1.15;letter-spacing:-1.5px}
+.hero{margin-top:20px;font-weight:800;font-size:40px;line-height:1.05;letter-spacing:-2px}
 .hero .n{color:var(--a);transition:color .4s}
+.hero .u{font-size:22px;letter-spacing:-.5px}
+.herosub{font-weight:500;font-size:12px;color:var(--ink-soft);margin-top:5px}
 /* days */
-.days{display:flex;gap:10px;margin-top:20px;overflow-x:auto;margin-inline:-22px;padding:8px 22px;scrollbar-width:none}
+.days{display:flex;gap:10px;margin-top:18px;overflow-x:auto;margin-inline:-22px;padding:8px 22px;scrollbar-width:none}
 .day{flex:none;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;background:none;border:none;padding:0;font-family:inherit;color:var(--ink)}
-.day .ring{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .3s}
-.day .core{width:46px;height:46px;border-radius:50%;background:#0d1114;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.day .num{font-weight:800;font-size:16px;line-height:1;color:var(--ink)}
+.day .ring{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .3s}
+.day .core{width:44px;height:44px;border-radius:50%;background:#0d1114;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.day .num{font-weight:800;font-size:15px;line-height:1;color:var(--ink)}
 .day .cnt{font-weight:600;font-size:8px;color:var(--ink-dim);margin-top:1px}
 .day .lbl{font-weight:700;font-size:10px;color:var(--ink-soft)}
 .day.sel .num,.day.sel .lbl{color:var(--a)}
+/* hour chips */
+.hours{display:flex;gap:7px;margin-top:8px;overflow-x:auto;margin-inline:-22px;padding:4px 22px;align-items:center;scrollbar-width:none}
+.hchip{flex:none;display:flex;flex-direction:column;align-items:center;gap:4px;background:#12171a;border:1px solid var(--line);border-radius:16px;padding:9px 13px 7px;cursor:pointer;transition:background .25s;font-family:inherit}
+.hchip .t{font-weight:600;font-size:13px;color:#e7efe9;white-space:nowrap}
+.hchip.none .t{color:#4a534e}
+.hchip .g{width:22px;height:3px;border-radius:2px;background:var(--track)}
+.hchip.sel{background:var(--a);border-color:var(--a)}
+.hchip.sel .t{font-weight:800;color:var(--a-dark)}
+.hchip.sel .g{background:var(--a-dark)}
 /* filters */
-.filters{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.filters{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .chip{font-weight:600;font-size:12px;background:var(--chip-bg);border:1px solid var(--chip-border);color:var(--chip-ink);border-radius:99px;padding:8px 14px;white-space:nowrap;cursor:pointer;font-family:inherit}
 .chip.on{font-weight:700;background:var(--a);border-color:var(--a);color:var(--a-dark)}
 select.chip{appearance:none;-webkit-appearance:none;padding-right:28px;background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:calc(100% - 16px) 55%,calc(100% - 11px) 55%;background-size:5px 5px;background-repeat:no-repeat}
 /* list */
-.meta-line{font-weight:500;font-size:11.5px;color:var(--ink-soft);margin-top:18px}
+.meta-line{font-weight:500;font-size:11.5px;color:var(--ink-soft);margin-top:16px}
 .clubs{display:flex;flex-direction:column;gap:10px;margin-top:10px}
-.club{background:var(--card);border:1px solid var(--line);backdrop-filter:blur(10px);border-radius:22px;padding:16px;cursor:pointer;transition:border-color .3s;text-align:left;font-family:inherit;color:var(--ink);width:100%}
-.club.open{border-color:color-mix(in srgb,var(--a) 33%,transparent)}
+.club{background:var(--card);border:1px solid var(--line);backdrop-filter:blur(10px);border-radius:22px;padding:16px;cursor:pointer;text-align:left;font-family:inherit;color:var(--ink);width:100%}
 .club-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
 .club-name{font-weight:700;font-size:16px}
-.club-arr{font-weight:700;font-size:11px;color:var(--a);flex:none}
+.club-dist{font-weight:700;font-size:11px;color:var(--a);flex:none}
 .club-meta{font-size:11.5px;color:var(--ink-soft);margin-top:2px}
 .bar{height:34px;border-radius:8px;margin-top:14px;position:relative}
-.bar span{position:absolute;top:50%;transform:translateY(-50%);font-weight:800;font-size:12px;color:var(--a-dark);white-space:nowrap}
+.bar span{position:absolute;top:50%;transform:translateY(-50%);font-weight:800;font-size:12px;white-space:nowrap}
 .ticks{display:flex;justify-content:space-between;margin-top:5px;font-weight:600;font-size:9.5px;color:var(--ink-dim)}
-.detail{display:flex;flex-direction:column;gap:8px;margin-top:14px;border-top:1px solid var(--line);padding-top:14px}
-.row{display:flex;align-items:center;gap:12px}
-.row .t{font-weight:800;font-size:14px;color:var(--a);width:44px;flex:none}
-.row .mid{flex:1;min-width:0}
-.row .lab{font-weight:600;font-size:12.5px}
-.row .sub{font-size:10.5px;color:var(--ink-soft)}
-.row .pr{font-weight:700;font-size:12.5px;color:var(--chip-ink);flex:none}
-.row .book{font-weight:800;font-size:11px;background:var(--a);color:var(--a-dark);border-radius:99px;padding:7px 12px;white-space:nowrap;text-decoration:none;flex:none}
-.book-note{font-size:10px;color:var(--ink-dim);margin-top:2px}
+.club-foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.club-foot .n{font-weight:700;font-size:11.5px;color:var(--chip-ink)}
+.club-foot .go{font-weight:800;font-size:11px;color:var(--a)}
 /* empty states */
 .empty{text-align:center;padding:40px 20px;color:var(--ink-soft);font-size:13px}
 .empty .reset{color:var(--a);font-weight:700;cursor:pointer;background:none;border:none;font-family:inherit;font-size:13px;padding:0}
@@ -88,19 +109,43 @@ select.chip{appearance:none;-webkit-appearance:none;padding-right:28px;backgroun
 .bigcard .ico{width:56px;height:56px;border-radius:50%;background:var(--a-bg);border:1px solid var(--a-border);margin:0 auto;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;color:var(--a)}
 .bigcard .h{font-weight:700;font-size:16px;margin-top:14px;color:var(--ink)}
 .bigcard .p{font-size:12px;color:var(--ink-soft);margin-top:6px;line-height:1.5}
-/* tab bar */
-.tabbar{
-  position:fixed;left:22px;right:22px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:50;
-  display:flex;gap:6px;background:#12171add;border:1px solid var(--line);
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:22px;padding:6px;
-  max-width:430px;margin:0 auto;
-}
-.tab{flex:1;background:transparent;border:none;border-radius:17px;padding:9px 0 8px;text-align:center;cursor:pointer;transition:background .3s;font-family:inherit}
-.tab .lbl{font-weight:800;font-size:12.5px;color:var(--ink-soft)}
-.tab .cnt{font-weight:600;font-size:9px;color:var(--ink-dim)}
-.tab.on{background:var(--a)}
-.tab.on .lbl{color:var(--a-dark)}
-.tab.on .cnt{color:color-mix(in srgb,var(--a-dark) 80%,transparent)}
+/* ===== map view ===== */
+.mapview{position:fixed;inset:0;background:#0a0e10;display:flex;flex-direction:column;z-index:60}
+.mapcanvas{flex:1;position:relative;overflow:hidden;background:#0d1214}
+.mapcanvas .grid{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 38px,#141b1f 38px 39px),repeating-linear-gradient(90deg,transparent 0 38px,#141b1f 38px 39px)}
+.mapcanvas .seine{position:absolute;left:-10%;top:30%;width:80%;height:60px;background:#0f2a33;transform:rotate(-14deg);border-radius:40px;opacity:.8}
+.mapcanvas .park1{position:absolute;right:-8%;top:8%;width:180px;height:130px;background:radial-gradient(ellipse,#12331f,transparent 72%)}
+.mapcanvas .park2{position:absolute;left:6%;bottom:6%;width:150px;height:110px;background:radial-gradient(ellipse,#12331f,transparent 72%)}
+.pin{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;background:none;border:none;padding:0;font-family:inherit;z-index:2}
+.pin .b{width:32px;height:32px;border-radius:50%;background:#161c20;border:2px solid #2a3236;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:var(--chip-ink)}
+.pin.sel{z-index:3}
+.pin.sel .b{width:42px;height:42px;background:var(--a);border-color:#fff;color:var(--a-dark);animation:ocpulse 2s infinite}
+.pin .nm{font-weight:700;font-size:10px;background:#0d1114ee;border:1px solid var(--line);border-radius:99px;padding:3px 9px;white-space:nowrap;color:var(--ink)}
+.mapback{position:absolute;top:calc(20px + env(safe-area-inset-top,0px));left:20px;font-weight:700;font-size:12px;background:#0d1114ee;border:1px solid var(--line);border-radius:99px;padding:9px 15px;cursor:pointer;color:var(--ink);font-family:inherit;z-index:4}
+.mapdist{position:absolute;top:calc(20px + env(safe-area-inset-top,0px));right:20px;font-weight:700;font-size:11px;color:var(--a);background:#0d1114ee;border:1px solid var(--line);border-radius:99px;padding:9px 13px;z-index:4}
+/* bottom sheet */
+.sheet{background:#10171a;border-top:1px solid var(--line);border-radius:26px 26px 0 0;padding:18px 22px calc(26px + env(safe-area-inset-bottom,0px));max-height:52%;overflow-y:auto}
+.sheet .grab{width:38px;height:4px;border-radius:2px;background:#2a3236;margin:0 auto 14px}
+.sheet-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.sheet-name{font-weight:800;font-size:19px}
+.sheet-dist{font-weight:700;font-size:11.5px;color:var(--a);flex:none}
+.sheet-meta{font-size:12px;color:var(--ink-soft);margin-top:3px}
+/* directions */
+.modes{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap;align-items:center}
+.mode{display:flex;align-items:center;gap:6px;background:var(--chip-bg);border:1px solid var(--chip-border);border-radius:99px;padding:6px 11px;cursor:pointer;text-decoration:none;color:var(--chip-ink)}
+.mode .ic{font-size:12px}
+.mode .tm{font-weight:700;font-size:11px}
+.gmaps{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;background:var(--a);color:var(--a-dark);border-radius:14px;padding:11px;font-weight:800;font-size:12.5px;text-decoration:none}
+.geo-hint{font-size:10.5px;color:var(--ink-dim);margin-top:8px}
+.rows{display:flex;flex-direction:column;gap:9px;margin-top:16px}
+.row{display:flex;align-items:center;gap:12px}
+.row .t{font-weight:800;font-size:14px;color:var(--a);width:44px;flex:none}
+.row .mid{flex:1;min-width:0}
+.row .lab{font-weight:600;font-size:12.5px}
+.row .sub{font-size:10.5px;color:var(--ink-soft)}
+.row .pr{font-weight:700;font-size:12.5px;color:var(--chip-ink);flex:none}
+.row .book{font-weight:800;font-size:11px;background:var(--a);color:var(--a-dark);border-radius:99px;padding:8px 13px;white-space:nowrap;text-decoration:none;flex:none}
+.sheet-note{font-size:10px;color:var(--ink-dim);margin-top:12px}
 button:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--a);outline-offset:2px}
 </style>
 </head><body>
@@ -109,30 +154,42 @@ button:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(
 <div class="wrap">
   <div class="top">
     <span class="wordmark">onecourt<span class="dot">.</span></span>
-    <span class="maj" id="maj" hidden></span>
+    <span class="live" id="live" hidden><span class="halo"><span class="pt"></span></span><span class="tag" id="liveTag">LIVE</span><span class="hm" id="liveHm"></span></span>
   </div>
+  <nav class="tabs" aria-label="Choix du sport">
+    <button class="tab on" type="button" data-sport="tennis"><div class="lbl">Tennis</div><div class="cnt" id="cnt-tennis">—</div></button>
+    <button class="tab" type="button" data-sport="padel"><div class="lbl">Padel</div><div class="cnt" id="cnt-padel">—</div></button>
+    <button class="tab" type="button" data-sport="foot"><div class="lbl">Foot</div><div class="cnt" id="cnt-foot">—</div></button>
+  </nav>
   <div class="hero" id="hero"></div>
+  <div class="herosub" id="herosub"></div>
   <nav class="days" id="days" aria-label="Choix du jour"></nav>
+  <nav class="hours" id="hours" aria-label="Choix de l'heure"></nav>
   <div class="filters" id="filters">
     <select class="chip" id="fArr" aria-label="Arrondissement"><option value="">Tous les arr.</option></select>
     <button class="chip" id="fCov" type="button">Couvert</button>
-    <button class="chip" id="fSoir" type="button">Soir 18h+</button>
   </div>
   <div class="meta-line" id="metaLine"></div>
   <main id="list" class="clubs"></main>
 </div>
-<nav class="tabbar" aria-label="Choix du sport">
-  <button class="tab on" type="button" data-sport="tennis"><div class="lbl">Tennis</div><div class="cnt" id="cnt-tennis">—</div></button>
-  <button class="tab" type="button" data-sport="padel"><div class="lbl">Padel</div><div class="cnt" id="cnt-padel">—</div></button>
-  <button class="tab" type="button" data-sport="foot"><div class="lbl">Foot</div><div class="cnt" id="cnt-foot">—</div></button>
-</nav>
+<div class="mapview" id="mapview" hidden>
+  <div class="mapcanvas" id="mapcanvas">
+    <div class="grid"></div><div class="seine"></div><div class="park1"></div><div class="park2"></div>
+    <div id="pins"></div>
+    <button class="mapback" type="button" id="mapback">← Retour</button>
+    <span class="mapdist" id="mapdistTop"></span>
+  </div>
+  <div class="sheet" id="sheet"></div>
+</div>
 <script>
 (function(){
 'use strict';
 var DS={tennis:null,padel:null,foot:null};
-var state={day:null,sport:'tennis',arr:'',cov:false,soir:false,open:null};
+var state={day:null,sport:'tennis',hour:null,arr:'',cov:false,mapClub:null};
+var pos=null,posTried=false;
 var DOW=['dim.','lun.','mar.','mer.','jeu.','ven.','sam.'];
 var DOWU=['DIM','LUN','MAR','MER','JEU','VEN','SAM'];
+var MONTHS=['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
 var RESA_TENNIS='https://tennis.paris.fr/tennis/jsp/site/Portal.jsp?page=recherche&view=recherche_creneau';
 var A={
   tennis:{a:'#00e676',dark:'#04250f',bg:'#00e67612',border:'#00e67644',g1:'#00e67655',g2:'#c6ff4e2a'},
@@ -143,9 +200,9 @@ var NOTE={tennis:'Réservation sur tennis.paris.fr — compte Mon Paris requis.'
   padel:'Réservation via Anybuddy — prix par piste.'};
 
 try{var saved=JSON.parse(localStorage.getItem('onecourt')||'{}');
-  ['arr','cov','soir','sport'].forEach(function(k){if(k in saved)state[k]=saved[k];});
+  ['arr','cov','sport'].forEach(function(k){if(k in saved)state[k]=saved[k];});
 }catch(e){}
-function persist(){try{localStorage.setItem('onecourt',JSON.stringify({arr:state.arr,cov:state.cov,soir:state.soir,sport:state.sport}));}catch(e){}}
+function persist(){try{localStorage.setItem('onecourt',JSON.stringify({arr:state.arr,cov:state.cov,sport:state.sport}));}catch(e){}}
 
 function ds(){return DS[state.sport];}
 function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
@@ -156,46 +213,90 @@ function applyAccent(){
   r.setProperty('--g1',c.g1);r.setProperty('--g2',c.g2);
 }
 
-function filteredSlots(day){
+/* ---- géoloc + distances ---- */
+function haversine(lat1,lng1,lat2,lng2){
+  var R=6371,rad=Math.PI/180;
+  var dLat=(lat2-lat1)*rad,dLng=(lng2-lng1)*rad;
+  var h=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat1*rad)*Math.cos(lat2*rad)*Math.sin(dLng/2)*Math.sin(dLng/2);
+  return 2*R*Math.asin(Math.sqrt(h));
+}
+function siteLng(site){return site.lng!=null?site.lng:site.lon;}
+function siteKm(site){
+  if(!pos||!site.lat||siteLng(site)==null)return null;
+  return haversine(pos.lat,pos.lng,site.lat,siteLng(site));
+}
+function fmtKm(km){
+  if(km==null)return null;
+  return km<1?Math.round(km*100)*10+' m':(Math.round(km*10)/10).toLocaleString('fr-FR')+' km';
+}
+function fmtMin(min){
+  if(min>=60){var h=Math.floor(min/60);return '~'+h+' h '+(Math.round(min-h*60)||'')+(min%60?' min':'');}
+  return '~'+Math.round(min)+' min';
+}
+/* durées estimées à vol d'oiseau corrigé (pas un vrai routage) */
+function modeTimes(km){
+  if(km==null)return null;
+  return {
+    walk:fmtMin(km*1.25/4.7*60),
+    bike:fmtMin(km*1.3/14*60),
+    transit:fmtMin(km<1?km*1.25/4.7*60:8+km*1.2/22*60)
+  };
+}
+function requestPos(cb){
+  if(pos||posTried&&!navigator.geolocation)return cb&&cb();
+  if(!navigator.geolocation){posTried=true;return cb&&cb();}
+  navigator.geolocation.getCurrentPosition(function(p){
+    pos={lat:p.coords.latitude,lng:p.coords.longitude};posTried=true;cb&&cb();
+  },function(){posTried=true;cb&&cb();},{maximumAge:600000,timeout:8000});
+}
+function gmapsUrl(site,mode){
+  var u='https://www.google.com/maps/dir/?api=1&destination='+site.lat+','+siteLng(site);
+  if(mode)u+='&travelmode='+mode;
+  return u;
+}
+
+/* ---- filtres ---- */
+function filteredSlots(day,ignoreHour){
   var out=[],D=ds();if(!D)return out;
   (D.slots[day]||[]).forEach(function(s){
     var site=D.sites[s.s];
     if(state.arr!=='' && String(site.arr)!==state.arr)return;
     if(state.cov && !s.cov)return;
-    if(state.soir && s.h<18)return;
+    if(!ignoreHour && state.hour!=null && s.h!==state.hour)return;
     out.push(s);
   });
   return out;
 }
 
-function renderMaj(){
-  var m=document.getElementById('maj');
+/* ---- rendus ---- */
+function renderLive(){
+  var l=document.getElementById('live');
   var D=ds();
-  if(!D||!D.generated_at){m.hidden=true;return;}
+  if(!D||!D.generated_at){l.hidden=true;return;}
   var gen=new Date(D.generated_at);
   var hrs=(Date.now()-gen.getTime())/36e5;
-  var hm=gen.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-  m.hidden=false;
-  m.classList.toggle('stale',hrs>30);
-  m.textContent=hrs>30?'● données anciennes':'● maj '+hm;
+  l.hidden=false;
+  l.classList.toggle('stale',hrs>30);
+  document.getElementById('liveTag').textContent=hrs>30?'ANCIEN':'LIVE';
+  document.getElementById('liveHm').textContent=gen.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
 }
 
 function renderHero(){
-  var h=document.getElementById('hero');h.textContent='';
+  var h=document.getElementById('hero'),sub=document.getElementById('herosub');
+  h.textContent='';sub.textContent='';
   var D=ds();
   if(!D){
-    h.appendChild(el('span','n','Foot'));
-    h.appendChild(document.createElement('br'));
-    h.appendChild(document.createTextNode('pas encore dispo'));
+    h.appendChild(el('span','n','—'));
+    sub.textContent='pas encore de source';
     return;
   }
   var n=filteredSlots(state.day).length;
+  h.appendChild(el('span','n',n.toLocaleString('fr-FR')));
+  h.appendChild(document.createTextNode(' '));
+  h.appendChild(el('span','u',n>1?'créneaux':'créneau'));
   var d=new Date(state.day+'T12:00:00');
-  var today=new Date();
-  var isToday=d.toDateString()===today.toDateString();
-  h.appendChild(el('span','n',n+' créneaux'));
-  h.appendChild(document.createElement('br'));
-  h.appendChild(document.createTextNode(isToday?'libres aujourd’hui':'libres '+DOW[d.getDay()]+' '+d.getDate()));
+  var sport=state.sport==='tennis'?'Tennis':'Padel';
+  sub.textContent=sport+' · '+DOW[d.getDay()]+' '+d.getDate()+' '+MONTHS[d.getMonth()]+' · Paris';
 }
 
 function renderDays(){
@@ -204,13 +305,11 @@ function renderDays(){
   var counts=D.days.map(function(day){return filteredSlots(day).length;});
   var max=Math.max.apply(null,counts.concat([1]));
   D.days.forEach(function(day,i){
-    var n=counts[i];
-    var sel=day===state.day;
+    var n=counts[i],sel=day===state.day;
     var r=Math.round(n/max*100);
     var b=el('button','day'+(sel?' sel':''));b.type='button';
     var ring=el('div','ring');
-    var on=sel?'var(--a)':'var(--ring-off)';
-    ring.style.background='conic-gradient('+on+' 0 '+r+'%, var(--track) '+r+'% 100%)';
+    ring.style.background='conic-gradient('+(sel?'var(--a)':'var(--ring-off)')+' 0 '+r+'%, var(--track) '+r+'% 100%)';
     var core=el('div','core');
     var d=new Date(day+'T12:00:00');
     core.appendChild(el('span','num',String(d.getDate())));
@@ -218,9 +317,52 @@ function renderDays(){
     ring.appendChild(core);
     b.appendChild(ring);
     b.appendChild(el('span','lbl',DOWU[d.getDay()]));
-    b.addEventListener('click',function(){state.day=day;state.open=null;render();});
+    b.addEventListener('click',function(){state.day=day;state.hour=null;state.mapClub=null;render();});
     nav.appendChild(b);
   });
+}
+
+function renderHours(){
+  var nav=document.getElementById('hours');nav.textContent='';
+  var D=ds();nav.hidden=!D;if(!D)return;
+  var base=filteredSlots(state.day,true);
+  var counts={};base.forEach(function(s){counts[s.h]=(counts[s.h]||0)+1;});
+  var max=Math.max.apply(null,Object.keys(counts).map(function(k){return counts[k];}).concat([1]));
+  var opts=[{label:'Tout',h:null}];
+  for(var i=8;i<=22;i++)opts.push({label:i+'h',h:i});
+  opts.forEach(function(o){
+    var sel=state.hour===o.h;
+    var n=o.h==null?max:(counts[o.h]||0);
+    var b=el('button','hchip'+(sel?' sel':'')+(n>0?'':' none'));b.type='button';
+    b.appendChild(el('span','t',o.label));
+    var g=el('span','g');
+    if(!sel&&n>0){
+      var alpha=Math.max(53,Math.round(n/max*255));
+      g.style.background='color-mix(in srgb,var(--a) '+Math.round(alpha/255*100)+'%,var(--track))';
+    }
+    b.appendChild(g);
+    b.addEventListener('click',function(){state.hour=sel?null:o.h;state.mapClub=null;render();});
+    nav.appendChild(b);
+  });
+}
+
+function siteAgg(){
+  var D=ds(),slots=filteredSlots(state.day),bySite={};
+  slots.forEach(function(s){(bySite[s.s]=bySite[s.s]||[]).push(s);});
+  var ids=Object.keys(bySite).map(Number);
+  ids.sort(function(a,b){
+    var ka=siteKm(D.sites[a]),kb=siteKm(D.sites[b]);
+    if(ka!=null&&kb!=null)return ka-kb;
+    var Aa=D.sites[a],Bb=D.sites[b];
+    return (Aa.arr-Bb.arr)||Aa.name.localeCompare(Bb.name);
+  });
+  return {ids:ids,bySite:bySite,total:slots.length};
+}
+
+function distLabel(site){
+  var km=siteKm(site);
+  if(km!=null)return fmtKm(km);
+  return site.arr>0&&site.arr<=20?site.arr+'ᵉ':'Hors Paris';
 }
 
 function renderList(){
@@ -228,48 +370,33 @@ function renderList(){
   var meta=document.getElementById('metaLine');meta.textContent='';
   var D=ds();
   if(!D){
-    if(state.sport==='foot'){
-      var bc=el('div','bigcard');
-      bc.appendChild(el('div','ico','⋯'));
-      bc.appendChild(el('div','h','Le foot arrive bientôt'));
-      bc.appendChild(el('div','p','Pas encore de source ouverte pour les terrains de foot à Paris. On te préviendra dès que c’est dispo.'));
-      list.appendChild(bc);
-    }else{
-      var bc2=el('div','bigcard');
-      bc2.appendChild(el('div','ico','!'));
-      bc2.appendChild(el('div','h','Données indisponibles'));
-      bc2.appendChild(el('div','p','Le fichier de créneaux n’a pas pu être chargé. Réessaye plus tard.'));
-      list.appendChild(bc2);
-    }
+    var bc=el('div','bigcard');
+    bc.appendChild(el('div','ico',state.sport==='foot'?'⋯':'!'));
+    bc.appendChild(el('div','h',state.sport==='foot'?'Le foot arrive bientôt':'Données indisponibles'));
+    bc.appendChild(el('div','p',state.sport==='foot'
+      ?'Pas encore de source ouverte pour les terrains de foot à Paris. On te préviendra dès que c’est dispo.'
+      :'Le fichier de créneaux n’a pas pu être chargé. Réessaye plus tard.'));
+    list.appendChild(bc);
     return;
   }
-  var slots=filteredSlots(state.day);
-  if(!slots.length){
+  var agg=siteAgg();
+  if(!agg.ids.length){
     var em=el('div','empty');
     em.appendChild(document.createTextNode('Aucun créneau avec ces filtres.'));
     em.appendChild(document.createElement('br'));
     var rst=el('button','reset','Réinitialiser');rst.type='button';
-    rst.addEventListener('click',function(){state.arr='';state.cov=false;state.soir=false;render();});
+    rst.addEventListener('click',function(){state.arr='';state.cov=false;state.hour=null;render();});
     em.appendChild(rst);
     list.appendChild(em);
     return;
   }
-  var bySite={};
-  slots.forEach(function(s){(bySite[s.s]=bySite[s.s]||[]).push(s);});
-  var siteIds=Object.keys(bySite).map(Number).sort(function(a,b){
-    var Aa=D.sites[a],Bb=D.sites[b];
-    return (Aa.arr-Bb.arr)||Aa.name.localeCompare(Bb.name);
-  });
-  meta.textContent=slots.length+' créneaux · '+siteIds.length+' sites';
-  siteIds.forEach(function(sid){
-    var site=D.sites[sid];
-    var ss=bySite[sid];
-    var open=state.open===sid;
-    var card=el('section','club'+(open?' open':''));
-    card.tabIndex=0;card.setAttribute('role','button');
+  meta.textContent=agg.total+' créneaux · '+agg.ids.length+' sites';
+  agg.ids.forEach(function(sid){
+    var site=D.sites[sid],ss=agg.bySite[sid];
+    var card=el('button','club');card.type='button';
     var head=el('div','club-head');
     head.appendChild(el('span','club-name',site.name));
-    head.appendChild(el('span','club-arr',site.arr>0&&site.arr<=20?site.arr+'ᵉ':'Hors Paris'));
+    head.appendChild(el('span','club-dist',distLabel(site)));
     card.appendChild(head);
     var surfs={};ss.forEach(function(s){if(s.surf&&s.surf!=='Padel')surfs[s.surf.toLowerCase()]=1;});
     var bits=[site.adresse||''];
@@ -277,63 +404,131 @@ function renderList(){
     if(ss.some(function(s){return s.cov;}))bits.push('couvert');
     if(ss.some(function(s){return s.ecl;}))bits.push('éclairé');
     card.appendChild(el('div','club-meta',bits.filter(Boolean).join(' · ')));
-    // availability bar 8h→22h
     var hrs=ss.map(function(s){return s.h;});
     var min=Math.min.apply(null,hrs),max=Math.max.apply(null,hrs)+1;
     var a=Math.max(0,(min-8)/14*100),b=Math.min(100,(max-8)/14*100);
     var bar=el('div','bar');
     bar.style.background='linear-gradient(90deg,var(--track) 0 '+a+'%, var(--a) '+a+'% '+b+'%, var(--track) '+b+'% 100%)';
     var bt=el('span',null,min+'h – '+max+'h');
-    bt.style.left='calc('+a+'% + 10px)';
+    if(b-a<16){bt.style.left=b<70?'calc('+b+'% + 8px)':'calc('+a+'% - 72px)';bt.style.color='var(--a)';}
+    else{bt.style.left='calc('+a+'% + 10px)';bt.style.color='var(--a-dark)';}
     bar.appendChild(bt);
     card.appendChild(bar);
     var ticks=el('div','ticks');
     ['8h','12h','16h','20h','22h'].forEach(function(t){ticks.appendChild(el('span',null,t));});
     card.appendChild(ticks);
-    if(open){
-      var det=el('div','detail');
-      var byHour={};
-      ss.forEach(function(s){(byHour[s.h]=byHour[s.h]||[]).push(s);});
-      Object.keys(byHour).map(Number).sort(function(x,y){return x-y;}).forEach(function(h){
-        var grp=byHour[h];
-        var row=el('div','row');
-        row.appendChild(el('span','t',h+'h'));
-        var mid=el('div','mid');
-        var isPadel=state.sport==='padel';
-        mid.appendChild(el('div','lab',grp.length+(isPadel?(grp.length>1?' créneaux':' créneau'):(grp.length>1?' courts libres':' court libre'))));
-        var metas={};grp.forEach(function(s){var m=isPadel?s.c:(s.surf||'').toLowerCase();if(m)metas[m]=1;});
-        var mtxt=Object.keys(metas).join(' / ');
-        mid.appendChild(el('div','sub',isPadel?mtxt:mtxt+(mtxt?' · ':'')+'1h'));
-        row.appendChild(mid);
-        var prices=grp.map(function(s){return parseFloat(String(s.p).replace(',','.'));}).filter(function(x){return !isNaN(x);});
-        var ptxt='';
-        if(prices.length){
-          var pmin=Math.min.apply(null,prices);
-          ptxt=(prices.some(function(x){return x!==pmin;})?'dès ':'')+pmin+' €';
-        }
-        row.appendChild(el('span','pr',ptxt));
-        var bk=el('a','book','Réserver');
-        bk.href=site.url||RESA_TENNIS;bk.target='_blank';bk.rel='noopener';
-        bk.addEventListener('click',function(e){e.stopPropagation();});
-        row.appendChild(bk);
-        det.appendChild(row);
-      });
-      det.appendChild(el('div','book-note',NOTE[state.sport]||''));
-      card.appendChild(det);
-    }
-    function toggle(){state.open=open?null:sid;render();}
-    card.addEventListener('click',toggle);
-    card.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});
+    var foot=el('div','club-foot');
+    foot.appendChild(el('span','n',ss.length+(ss.length>1?' créneaux dispo':' créneau dispo')));
+    foot.appendChild(el('span','go','Voir sur la carte →'));
+    card.appendChild(foot);
+    card.addEventListener('click',function(){openMap(sid);});
     list.appendChild(card);
   });
 }
+
+/* ---- vue carte ---- */
+function openMap(sid){
+  state.mapClub=sid;
+  requestPos(function(){renderMap();});
+  renderMap();
+}
+function closeMap(){state.mapClub=null;renderMap();}
+
+function renderMap(){
+  var mv=document.getElementById('mapview');
+  var open=state.mapClub!=null&&ds();
+  mv.hidden=!open;
+  document.body.classList.toggle('maplock',!!open);
+  if(!open)return;
+  var D=ds(),agg=siteAgg();
+  if(agg.ids.indexOf(state.mapClub)<0){state.mapClub=agg.ids[0];}
+  var selId=state.mapClub,selSite=D.sites[selId];
+  // pins : projection des lat/lng sur la zone
+  var pinsHost=document.getElementById('pins');pinsHost.textContent='';
+  var lats=agg.ids.map(function(i){return D.sites[i].lat;}).filter(Boolean);
+  var lngs=agg.ids.map(function(i){return siteLng(D.sites[i]);}).filter(Boolean);
+  var la0=Math.min.apply(null,lats),la1=Math.max.apply(null,lats);
+  var lo0=Math.min.apply(null,lngs),lo1=Math.max.apply(null,lngs);
+  var dla=Math.max(la1-la0,0.005),dlo=Math.max(lo1-lo0,0.005);
+  agg.ids.forEach(function(sid){
+    var site=D.sites[sid];if(!site.lat||siteLng(site)==null)return;
+    var x=12+((siteLng(site)-lo0)/dlo)*76;
+    var y=14+((la1-site.lat)/dla)*66;
+    var sel=sid===selId;
+    var p=el('button','pin'+(sel?' sel':''));p.type='button';
+    p.style.left=x+'%';p.style.top=y+'%';
+    p.appendChild(el('span','b',String(agg.bySite[sid].length)));
+    if(sel)p.appendChild(el('span','nm',site.name));
+    p.addEventListener('click',function(){state.mapClub=sid;renderMap();});
+    pinsHost.appendChild(p);
+  });
+  document.getElementById('mapdistTop').textContent=distLabel(selSite);
+  // bottom sheet
+  var sheet=document.getElementById('sheet');sheet.textContent='';
+  sheet.appendChild(el('div','grab'));
+  var head=el('div','sheet-head');
+  head.appendChild(el('span','sheet-name',selSite.name));
+  head.appendChild(el('span','sheet-dist',distLabel(selSite)));
+  sheet.appendChild(head);
+  sheet.appendChild(el('div','sheet-meta',(selSite.adresse||'')+(selSite.cp?' · '+selSite.cp:'')));
+  // trajets : à pied / vélo / transports + Google Maps
+  var modes=el('div','modes');
+  var km=siteKm(selSite),times=modeTimes(km);
+  [['walk','🚶','walking'],['bike','🚴','bicycling'],['transit','🚇','transit']].forEach(function(m){
+    var a=el('a','mode');
+    a.href=gmapsUrl(selSite,m[2]);a.target='_blank';a.rel='noopener';
+    a.appendChild(el('span','ic',m[1]));
+    a.appendChild(el('span','tm',times?times[m[0]]:'—'));
+    modes.appendChild(a);
+  });
+  sheet.appendChild(modes);
+  var g=el('a','gmaps','Ouvrir dans Google Maps ↗');
+  g.href=gmapsUrl(selSite,null);g.target='_blank';g.rel='noopener';
+  sheet.appendChild(g);
+  if(!pos){
+    sheet.appendChild(el('div','geo-hint',posTried
+      ?'Position indisponible — les temps de trajet s’afficheront si tu autorises la localisation.'
+      :'Autorise la localisation pour voir les temps de trajet.'));
+  }else{
+    sheet.appendChild(el('div','geo-hint','Temps estimés à vol d’oiseau — l’itinéraire exact est dans Google Maps.'));
+  }
+  // créneaux groupés par heure
+  var rows=el('div','rows');
+  var ss=agg.bySite[selId],byHour={};
+  ss.forEach(function(s){(byHour[s.h]=byHour[s.h]||[]).push(s);});
+  var isPadel=state.sport==='padel';
+  Object.keys(byHour).map(Number).sort(function(x,y){return x-y;}).forEach(function(h){
+    var grp=byHour[h];
+    var row=el('div','row');
+    row.appendChild(el('span','t',h+'h'));
+    var mid=el('div','mid');
+    mid.appendChild(el('div','lab',grp.length+(isPadel?(grp.length>1?' créneaux':' créneau'):(grp.length>1?' courts libres':' court libre'))));
+    var metas={};grp.forEach(function(s){var m=isPadel?s.c:(s.surf||'').toLowerCase();if(m)metas[m]=1;});
+    var mtxt=Object.keys(metas).join(' / ');
+    mid.appendChild(el('div','sub',isPadel?mtxt:mtxt+(mtxt?' · ':'')+'1h'));
+    row.appendChild(mid);
+    var prices=grp.map(function(s){return parseFloat(String(s.p).replace(',','.'));}).filter(function(x){return !isNaN(x);});
+    var ptxt='';
+    if(prices.length){
+      var pmin=Math.min.apply(null,prices);
+      ptxt=(prices.some(function(x){return x!==pmin;})?'dès ':'')+pmin+' €';
+    }
+    row.appendChild(el('span','pr',ptxt));
+    var bk=el('a','book','Réserver');
+    bk.href=selSite.url||RESA_TENNIS;bk.target='_blank';bk.rel='noopener';
+    row.appendChild(bk);
+    rows.appendChild(row);
+  });
+  sheet.appendChild(rows);
+  sheet.appendChild(el('div','sheet-note',NOTE[state.sport]||''));
+}
+document.getElementById('mapback').addEventListener('click',closeMap);
 
 function renderFilters(){
   var f=document.getElementById('filters');
   f.hidden=!ds();
   document.getElementById('fCov').hidden=state.sport!=='tennis';
   document.getElementById('fCov').classList.toggle('on',state.cov);
-  document.getElementById('fSoir').classList.toggle('on',state.soir);
   document.getElementById('fArr').value=state.arr;
   document.getElementById('metaLine').hidden=!ds();
 }
@@ -354,35 +549,34 @@ function rebuildArrOptions(){
 function renderTabs(){
   ['tennis','padel','foot'].forEach(function(sp){
     var c=document.getElementById('cnt-'+sp);
-    c.textContent=DS[sp]?DS[sp].total.toLocaleString('fr-FR')+' créneaux':(sp==='foot'?'—':'bientôt');
+    c.textContent=DS[sp]?DS[sp].total.toLocaleString('fr-FR'):(sp==='foot'?'—':'bientôt');
   });
   document.querySelectorAll('.tab').forEach(function(b){
     b.classList.toggle('on',b.getAttribute('data-sport')===state.sport);
   });
 }
 
-function render(){applyAccent();renderMaj();renderHero();renderDays();renderFilters();renderList();renderTabs();persist();}
+function render(){applyAccent();renderLive();renderHero();renderDays();renderHours();renderFilters();renderList();renderTabs();renderMap();persist();}
 
 function switchSport(sp){
   if(sp===state.sport)return;
-  state.sport=sp;state.arr='';state.open=null;
+  state.sport=sp;state.arr='';state.hour=null;state.mapClub=null;
   var D=ds();
   state.day=D?(D.days.find(function(day){return (D.slots[day]||[]).length>0;})||D.days[0]):null;
   rebuildArrOptions();render();
 }
 
-document.getElementById('fArr').addEventListener('change',function(){state.arr=this.value;state.open=null;render();});
+document.getElementById('fArr').addEventListener('change',function(){state.arr=this.value;state.mapClub=null;render();});
 document.getElementById('fCov').addEventListener('click',function(){state.cov=!state.cov;render();});
-document.getElementById('fSoir').addEventListener('click',function(){state.soir=!state.soir;render();});
 document.querySelectorAll('.tab').forEach(function(b){
   b.addEventListener('click',function(){switchSport(b.getAttribute('data-sport'));});
 });
 
-function loadJSON(path){return fetch(path,{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
-
 if('serviceWorker' in navigator){
   try{navigator.serviceWorker.register('sw.js').catch(function(){});}catch(e){}
 }
+
+function loadJSON(path){return fetch(path,{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
 
 Promise.all([loadJSON('data.json'),loadJSON('padel.json'),loadJSON('foot.json')]).then(function(res){
   DS.tennis=res[0];DS.padel=res[1];DS.foot=res[2];
@@ -391,6 +585,8 @@ Promise.all([loadJSON('data.json'),loadJSON('padel.json'),loadJSON('foot.json')]
   state.day=D?(D.days.find(function(day){return (D.slots[day]||[]).length>0;})||D.days[0]):null;
   rebuildArrOptions();
   render();
+  // géoloc en tâche de fond pour afficher les distances sur les cartes
+  requestPos(function(){if(pos)render();});
 });
 })();
 </script>
