@@ -194,8 +194,8 @@ var MONTHS=['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.',
 var RESA_TENNIS='https://tennis.paris.fr/tennis/jsp/site/Portal.jsp?page=recherche&view=recherche_creneau';
 var A={
   tennis:{a:'#00e676',dark:'#04250f',bg:'#00e67612',border:'#00e67644',g1:'#00e67655',g2:'#c6ff4e2a'},
-  padel:{a:'#00c2ff',dark:'#03222e',bg:'#00c2ff12',border:'#00c2ff44',g1:'#00c2ff55',g2:'#7cd8ff2a'},
-  foot:{a:'#ffb02e',dark:'#2b1c03',bg:'#ffb02e12',border:'#ffb02e44',g1:'#ffb02e44',g2:'#ffd68a22'}
+  padel:{a:'#a855f7',dark:'#26063a',bg:'#a855f712',border:'#a855f744',g1:'#a855f755',g2:'#d8b4fe2a'},
+  foot:{a:'#00c2ff',dark:'#03222e',bg:'#00c2ff12',border:'#00c2ff44',g1:'#00c2ff55',g2:'#7cd8ff2a'}
 };
 var NOTE={tennis:'Réservation sur tennis.paris.fr — compte Mon Paris requis.',
   padel:'Réservation via Anybuddy — prix par piste.'};
@@ -314,7 +314,6 @@ function renderDays(){
     var core=el('div','core');
     var d=new Date(day+'T12:00:00');
     core.appendChild(el('span','num',String(d.getDate())));
-    core.appendChild(el('span','cnt',n>0?String(n):'—'));
     ring.appendChild(core);
     b.appendChild(ring);
     b.appendChild(el('span','lbl',DOWU[d.getDay()]));
