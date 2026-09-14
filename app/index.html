@@ -99,9 +99,10 @@ select.chip{appearance:none;-webkit-appearance:none;padding-right:28px;backgroun
 .bar{height:34px;border-radius:8px;margin-top:14px;position:relative}
 .bar span{position:absolute;top:50%;transform:translateY(-50%);font-weight:800;font-size:12px;white-space:nowrap}
 .ticks{display:flex;justify-content:space-between;margin-top:5px;font-weight:600;font-size:9.5px;color:var(--ink-dim)}
-.club-foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
-.club-foot .n{font-weight:700;font-size:11.5px;color:var(--chip-ink)}
-.club-foot .go{font-weight:800;font-size:11px;color:var(--a)}
+.club-foot{display:flex;align-items:center;gap:10px;margin-top:12px}
+.club-foot .n{font-weight:700;font-size:11.5px;color:var(--chip-ink);flex:1}
+.club-foot .bike{font-weight:700;font-size:10.5px;color:var(--ink-soft);white-space:nowrap}
+.club-foot .go{font-weight:800;font-size:11px;color:var(--a);white-space:nowrap}
 /* empty states */
 .empty{text-align:center;padding:40px 20px;color:var(--ink-soft);font-size:13px}
 .empty .reset{color:var(--a);font-weight:700;cursor:pointer;background:none;border:none;font-family:inherit;font-size:13px;padding:0}
@@ -419,6 +420,8 @@ function renderList(){
     card.appendChild(ticks);
     var foot=el('div','club-foot');
     foot.appendChild(el('span','n',ss.length+(ss.length>1?' créneaux dispo':' créneau dispo')));
+    var kmc=siteKm(site);
+    if(kmc!=null)foot.appendChild(el('span','bike','🚴 '+modeTimes(kmc).bike));
     foot.appendChild(el('span','go','Voir sur la carte →'));
     card.appendChild(foot);
     card.addEventListener('click',function(){openMap(sid);});
