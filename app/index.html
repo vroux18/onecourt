@@ -245,7 +245,9 @@ button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible{ou
 (function(){
 'use strict';
 var DS={tennis:null,padel:null,foot:null};
-var state={view:'home',day:null,sport:'tennis',hour:null,near:false,cov:false,mapClub:null};
+var state={view:'home',day:null,sport:'tennis',range:null,near:false,cov:false,mapClub:null};
+// créneaux de 2h, soir d'abord
+var RANGES=[[18,20],[20,22],[8,10],[10,12],[12,14],[14,16],[16,18]];
 var SPORTMETA={tennis:{label:'Tennis',emoji:'🎾'},padel:{label:'Padel',emoji:'🏓'},foot:{label:'Foot',emoji:'⚽'}};
 var homeDay=null;
 var pos=null,posTried=false,origin={src:null,label:null};
@@ -336,7 +338,7 @@ function filteredSlots(day,ignoreHour){
   var out=[],D=ds();if(!D)return out;
   (D.slots[day]||[]).forEach(function(s){
     if(state.cov && !s.cov)return;
-    if(!ignoreHour && state.hour!=null && s.h!==state.hour)return;
+    if(!ignoreHour && state.range && (s.h<state.range[0]||s.h>=state.range[1]))return;
     out.push(s);
   });
   return out;
@@ -401,22 +403,26 @@ function renderHours(){
   var base=filteredSlots(state.day,true);
   var counts={};base.forEach(function(s){counts[s.h]=(counts[s.h]||0)+1;});
   var max=Math.max.apply(null,Object.keys(counts).map(function(k){return counts[k];}).concat([1]));
-  // soir d'abord (18h→22h), puis le matin et l'après-midi
-  var opts=[{label:'Tout',h:null}];
-  for(var i=18;i<=22;i++)opts.push({label:i+'h',h:i});
-  for(var j=8;j<=17;j++)opts.push({label:j+'h',h:j});
+  // créneaux de 2h, soir d'abord
+  var opts=[{label:'Tout',r:null}];
+  RANGES.forEach(function(r){opts.push({label:r[0]+'–'+r[1]+'h',r:r});});
+  var rangeCount=function(r){var t=0;for(var h=r[0];h<r[1];h++)t+=counts[h]||0;return t;};
+  var maxR=Math.max.apply(null,RANGES.map(rangeCount).concat([1]));
   opts.forEach(function(o){
-    var sel=state.hour===o.h;
-    var n=o.h==null?max:(counts[o.h]||0);
+    var sel=o.r?(state.range&&state.range[0]===o.r[0]):state.range==null&&false;
+    if(o.r==null)sel=state.range==null;
+    var n=o.r==null?maxR:rangeCount(o.r);
     var b=el('button','hchip'+(sel?' sel':'')+(n>0?'':' none'));b.type='button';
     b.appendChild(el('span','t',o.label));
     var g=el('span','g');
     if(!sel&&n>0){
-      var alpha=Math.max(53,Math.round(n/max*255));
-      g.style.background='color-mix(in srgb,var(--a) '+Math.round(alpha/255*100)+'%,var(--track))';
+      g.style.background='color-mix(in srgb,var(--a) '+Math.max(21,Math.round(n/maxR*100))+'%,var(--track))';
     }
     b.appendChild(g);
-    b.addEventListener('click',function(){state.hour=sel?null:o.h;state.mapClub=null;render();});
+    b.addEventListener('click',function(){
+      state.range=(o.r&&!(state.range&&state.range[0]===o.r[0]))?o.r:null;
+      state.mapClub=null;render();
+    });
     nav.appendChild(b);
   });
 }
@@ -462,7 +468,7 @@ function renderList(){
     em.appendChild(document.createTextNode('Aucun créneau avec ces filtres.'));
     em.appendChild(document.createElement('br'));
     var rst=el('button','reset','Réinitialiser');rst.type='button';
-    rst.addEventListener('click',function(){state.cov=false;state.hour=null;render();});
+    rst.addEventListener('click',function(){state.cov=false;state.range=null;render();});
     em.appendChild(rst);
     list.appendChild(em);
     return;
@@ -648,7 +654,7 @@ function renderHome(){
     var ar=el('span','ar','→');ar.style.color=c.a;
     b.appendChild(ar);
     b.addEventListener('click',function(){
-      state.sport=sp;state.hour=null;state.mapClub=null;
+      state.sport=sp;state.range=null;state.mapClub=null;
       var DD=ds();
       state.day=DD?(DD.days.indexOf(homeDay)>=0&&(DD.slots[homeDay]||[]).length?homeDay:(DD.days.find(function(day){return (DD.slots[day]||[]).length>0;})||DD.days[0])):null;
       state.view='list';render();
@@ -678,7 +684,7 @@ function render(){applyAccent();renderHome();renderLive();renderHero();renderDay
 
 function switchSport(sp){
   if(sp===state.sport)return;
-  state.sport=sp;state.hour=null;state.mapClub=null;
+  state.sport=sp;state.range=null;state.mapClub=null;
   var D=ds();
   state.day=D?(D.days.find(function(day){return (D.slots[day]||[]).length>0;})||D.days[0]):null;
   render();
