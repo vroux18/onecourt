@@ -91,8 +91,11 @@ body.maplock{overflow:hidden}
 .hero .n{color:var(--a);transition:color .4s}
 .hero .u{font-size:22px;letter-spacing:-.5px}
 .herosub{font-weight:500;font-size:12px;color:var(--ink-soft);margin-top:5px}
+/* barre sticky jours + heures : pills flottantes */
+.stickybar{position:sticky;top:8px;z-index:30;display:flex;flex-direction:column;gap:8px;margin-top:18px}
+.stickybar>nav{background:#12171add;border:1px solid var(--line);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-radius:22px}
 /* days */
-.days{display:flex;gap:10px;margin-top:18px;overflow-x:auto;margin-inline:-22px;padding:8px 22px;scrollbar-width:none}
+.days{display:flex;gap:10px;overflow-x:auto;padding:10px 12px;scrollbar-width:none}
 .day{flex:none;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;background:none;border:none;padding:0;font-family:inherit;color:var(--ink)}
 .day .ring{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .3s}
 .day .core{width:44px;height:44px;border-radius:50%;background:#0d1114;display:flex;flex-direction:column;align-items:center;justify-content:center}
@@ -101,7 +104,7 @@ body.maplock{overflow:hidden}
 .day .lbl{font-weight:700;font-size:10px;color:var(--ink-soft)}
 .day.sel .num,.day.sel .lbl{color:var(--a)}
 /* hour chips */
-.hours{display:flex;gap:7px;margin-top:8px;overflow-x:auto;margin-inline:-22px;padding:8px 22px;align-items:center;scrollbar-width:none;position:sticky;top:0;z-index:30;background:var(--bg)}
+.hours{display:flex;gap:7px;overflow-x:auto;padding:8px 10px;align-items:center;scrollbar-width:none}
 .hchip{flex:none;display:flex;flex-direction:column;align-items:center;gap:4px;background:#12171a;border:1px solid var(--line);border-radius:16px;padding:9px 13px 7px;cursor:pointer;transition:background .25s;font-family:inherit}
 .hchip .t{font-weight:600;font-size:13px;color:#e7efe9;white-space:nowrap}
 .hchip.none .t{color:#4a534e}
@@ -159,7 +162,7 @@ select.chip{appearance:none;-webkit-appearance:none;padding-right:28px;backgroun
 .lpin .nm{font-weight:700;font-size:10px;background:#0d1114ee;border:1px solid var(--line);border-radius:99px;padding:3px 9px;white-space:nowrap;color:var(--ink)}
 .lyou{width:14px;height:14px;border-radius:50%;background:#4c9aff;border:2.5px solid #fff;box-shadow:0 0 10px #4c9affaa;transform:translate(-50%,-50%)}
 .mapback,.mapdist,.modesbar{z-index:1001}
-.mapback{position:absolute;top:calc(20px + env(safe-area-inset-top,0px));left:20px;font-weight:700;font-size:12px;background:#0d1114ee;border:1px solid var(--line);border-radius:99px;padding:9px 15px;cursor:pointer;color:var(--ink);font-family:inherit;z-index:4}
+.mapback{position:absolute;top:calc(20px + env(safe-area-inset-top,0px));left:20px;display:flex;align-items:center;gap:7px;font-weight:800;font-size:13.5px;background:var(--a);border:none;border-radius:99px;padding:12px 18px;cursor:pointer;color:var(--a-dark);font-family:inherit;z-index:4;box-shadow:0 4px 18px #000a}
 .mapdist{position:absolute;top:calc(20px + env(safe-area-inset-top,0px));right:20px;font-weight:700;font-size:11px;color:var(--a);background:#0d1114ee;border:1px solid var(--line);border-radius:99px;padding:9px 13px;z-index:4}
 /* bottom sheet */
 .sheet{background:#10171a;border-top:1px solid var(--line);border-radius:26px 26px 0 0;padding:18px 22px calc(26px + env(safe-area-inset-bottom,0px));max-height:52%;overflow-y:auto}
@@ -222,8 +225,10 @@ button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible{ou
   </nav>
   <div class="hero" id="hero"></div>
   <div class="herosub" id="herosub"></div>
-  <nav class="days" id="days" aria-label="Choix du jour"></nav>
-  <nav class="hours" id="hours" aria-label="Choix de l'heure"></nav>
+  <div class="stickybar" id="stickybar">
+    <nav class="days" id="days" aria-label="Choix du jour"></nav>
+    <nav class="hours" id="hours" aria-label="Choix de l'heure"></nav>
+  </div>
   <div class="filters" id="filters">
     <button class="chip" id="fNear" type="button">📍 Le plus proche</button>
     <button class="chip" id="fCov" type="button">Couvert</button>
@@ -391,7 +396,9 @@ function renderHero(){
 
 function renderDays(){
   var nav=document.getElementById('days');nav.textContent='';
-  var D=ds();if(!D)return;
+  var D=ds();
+  document.getElementById('stickybar').hidden=!D;
+  if(!D)return;
   var counts=D.days.map(function(day){return filteredSlots(day).length;});
   var max=Math.max.apply(null,counts.concat([1]));
   D.days.forEach(function(day,i){
@@ -597,6 +604,7 @@ function renderPins(agg,selId){
 
 function openMap(sid){
   state.mapClub=sid;
+  history.pushState({oc:'map'},'');
   requestPos(function(){renderMap();});
   renderMap();
 }
@@ -670,7 +678,16 @@ function renderMap(){
   }
   sheet.appendChild(el('div','sheet-note',NOTE[state.sport]||''));
 }
-document.getElementById('mapback').addEventListener('click',closeMap);
+document.getElementById('mapback').addEventListener('click',function(){history.back();});
+
+// bouton retour du téléphone : navigation interne (carte → liste → accueil)
+window.addEventListener('popstate',function(e){
+  var tag=e.state&&e.state.oc;
+  document.getElementById('originpanel').hidden=true;
+  if(tag==='map'){render();return;}
+  if(tag==='list'){state.mapClub=null;state.view='list';render();return;}
+  state.mapClub=null;state.view='home';render();window.scrollTo(0,0);
+});
 
 function renderFilters(){
   var f=document.getElementById('filters');
@@ -721,6 +738,7 @@ function renderHome(){
       state.sport=sp;state.ranges=[];state.mapClub=null;
       var DD=ds();
       state.day=DD?(DD.days.indexOf(homeDay)>=0&&(DD.slots[homeDay]||[]).length?homeDay:(DD.days.find(function(day){return (DD.slots[day]||[]).length>0;})||DD.days[0])):null;
+      history.pushState({oc:'list'},'');
       state.view='list';render();
       window.scrollTo(0,0);
     });
@@ -754,17 +772,20 @@ function switchSport(sp){
   render();
 }
 
-document.querySelector('.wordmark').addEventListener('click',function(){state.view='home';state.mapClub=null;render();window.scrollTo(0,0);});
+document.querySelector('.wordmark').addEventListener('click',function(){
+  if(state.view==='list')history.back();
+});
 // origine : géoloc ou adresse
 function renderOrigin(){
   document.getElementById('originbtn').textContent='📍 '+(pos?(origin.label||'Ma position'):'Ma position');
 }
 document.getElementById('originbtn').addEventListener('click',function(){
+  history.pushState({oc:'origin'},'');
   document.getElementById('originpanel').hidden=false;
   document.getElementById('originHint').textContent='Les distances et temps de trajet seront calculés depuis ce point.';
 });
 document.getElementById('originpanel').addEventListener('click',function(e){
-  if(e.target===this)this.hidden=true;
+  if(e.target===this)history.back();
 });
 document.getElementById('originGeo').addEventListener('click',function(){
   var hint=document.getElementById('originHint');
@@ -772,7 +793,7 @@ document.getElementById('originGeo').addEventListener('click',function(){
   hint.textContent='Localisation…';
   navigator.geolocation.getCurrentPosition(function(p){
     pos={lat:p.coords.latitude,lng:p.coords.longitude};origin={src:'geo',label:'Ma position'};posTried=true;
-    document.getElementById('originpanel').hidden=true;render();
+    history.back();
   },function(){hint.textContent='Position refusée — autorise la localisation ou entre une adresse.';posTried=true;},
   {maximumAge:60000,timeout:10000});
 });
@@ -784,7 +805,7 @@ document.getElementById('originOk').addEventListener('click',function(){
   geocode(q,function(r){
     if(!r){hint.textContent='Adresse introuvable — essaie avec la ville (ex. "12 rue Oberkampf Paris").';return;}
     pos={lat:r.lat,lng:r.lng};origin={src:'addr',label:r.label};posTried=true;
-    document.getElementById('originpanel').hidden=true;render();
+    history.back();
   });
 });
 document.getElementById('originInput').addEventListener('keydown',function(e){
