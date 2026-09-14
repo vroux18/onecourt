@@ -40,10 +40,6 @@ body.maplock{overflow:hidden}
 #glow1{top:-100px;left:-60px;width:320px;height:320px;background:radial-gradient(circle,var(--g1),transparent 66%)}
 #glow2{bottom:-80px;right:-80px;width:280px;height:280px;background:radial-gradient(circle,var(--g2),transparent 66%)}
 .wrap{max-width:430px;margin:0 auto;position:relative;z-index:1}
-/* mini-bandeau installation */
-.a2hs{position:relative;z-index:2;max-width:430px;margin:0 auto 10px;display:flex;align-items:center;gap:8px;font-size:10px;line-height:1.4;color:var(--ink-dim);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 10px}
-.a2hs b{color:var(--ink-soft);font-weight:700}
-.a2hs button{background:none;border:none;color:var(--ink-dim);cursor:pointer;padding:0 2px;font-size:11px;margin-left:auto;font-family:inherit;flex:none}
 /* ===== home ===== */
 .homeview{position:relative;z-index:1;max-width:430px;margin:0 auto;min-height:calc(100dvh - 66px - env(safe-area-inset-top,0px));display:flex;flex-direction:column;justify-content:center}
 .home-brand{font-weight:800;font-size:34px;letter-spacing:-1px}
@@ -192,7 +188,6 @@ button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible{ou
 </head><body>
 <div class="glow" id="glow1"></div>
 <div class="glow" id="glow2"></div>
-<div class="a2hs" id="a2hs" hidden><span>💡 Ajoute l’app à ton écran d’accueil : <b>Partager → « Sur l’écran d’accueil »</b></span><button id="a2hsX" type="button" aria-label="Fermer">✕</button></div>
 <div class="homeview" id="homeview" hidden>
   <div class="home-brand">onecourt<span class="dot">.</span></div>
   <div class="home-date" id="homeDate"></div>
@@ -738,17 +733,6 @@ document.querySelectorAll('.tab').forEach(function(b){
 if('serviceWorker' in navigator){
   try{navigator.serviceWorker.register('sw.js').catch(function(){});}catch(e){}
 }
-
-// mini-bandeau "ajouter à l'écran d'accueil" (masqué une fois installée ou fermée)
-(function(){
-  var standalone=(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||window.navigator.standalone;
-  var seen=false;try{seen=localStorage.getItem('onecourt_a2hs')==='1';}catch(e){}
-  var b=document.getElementById('a2hs');
-  if(!standalone&&!seen)b.hidden=false;
-  document.getElementById('a2hsX').addEventListener('click',function(){
-    b.hidden=true;try{localStorage.setItem('onecourt_a2hs','1');}catch(e){}
-  });
-})();
 
 function loadJSON(path){return fetch(path,{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
 
