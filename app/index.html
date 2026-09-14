@@ -12,6 +12,8 @@
 <title>OneCourt</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
 :root{
   --a:#00e676; --a-dark:#04250f; --a-bg:#00e67612; --a-border:#00e67644;
@@ -146,6 +148,17 @@ select.chip{appearance:none;-webkit-appearance:none;padding-right:28px;backgroun
 .pin.sel{z-index:3}
 .pin.sel .b{width:42px;height:42px;background:var(--a);border-color:#fff;color:var(--a-dark);animation:ocpulse 2s infinite}
 .pin .nm{font-weight:700;font-size:10px;background:#0d1114ee;border:1px solid var(--line);border-radius:99px;padding:3px 9px;white-space:nowrap;color:var(--ink)}
+/* vraie carte (Leaflet + tuiles CARTO dark) */
+#leafmap{position:absolute;inset:0;z-index:1}
+.leaflet-container{background:#0d1214;font-family:inherit}
+.leaflet-control-attribution{background:#0d1114cc!important;color:#5a635e!important;font-size:9px!important}
+.leaflet-control-attribution a{color:#79837f!important}
+.lpin{display:flex;flex-direction:column;align-items:center;gap:4px;transform:translate(-50%,-50%);cursor:pointer;width:max-content}
+.lpin .b{width:32px;height:32px;border-radius:50%;background:#161c20;border:2px solid #2a3236;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:var(--chip-ink);box-shadow:0 2px 8px #0008}
+.lpin.sel .b{width:42px;height:42px;background:var(--a);border-color:#fff;color:var(--a-dark);animation:ocpulse 2s infinite}
+.lpin .nm{font-weight:700;font-size:10px;background:#0d1114ee;border:1px solid var(--line);border-radius:99px;padding:3px 9px;white-space:nowrap;color:var(--ink)}
+.lyou{width:14px;height:14px;border-radius:50%;background:#4c9aff;border:2.5px solid #fff;box-shadow:0 0 10px #4c9affaa;transform:translate(-50%,-50%)}
+.mapback,.mapdist,.modesbar{z-index:1001}
 .mapback{position:absolute;top:calc(20px + env(safe-area-inset-top,0px));left:20px;font-weight:700;font-size:12px;background:#0d1114ee;border:1px solid var(--line);border-radius:99px;padding:9px 15px;cursor:pointer;color:var(--ink);font-family:inherit;z-index:4}
 .mapdist{position:absolute;top:calc(20px + env(safe-area-inset-top,0px));right:20px;font-weight:700;font-size:11px;color:var(--a);background:#0d1114ee;border:1px solid var(--line);border-radius:99px;padding:9px 13px;z-index:4}
 /* bottom sheet */
@@ -233,7 +246,8 @@ button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible{ou
 </div>
 <div class="mapview" id="mapview" hidden>
   <div class="mapcanvas" id="mapcanvas">
-    <div class="grid"></div><div class="seine"></div><div class="park1"></div><div class="park2"></div>
+    <div id="mapdeco"><div class="grid"></div><div class="seine"></div><div class="park1"></div><div class="park2"></div></div>
+    <div id="leafmap" hidden></div>
     <div id="pins"></div>
     <button class="mapback" type="button" id="mapback">← Retour</button>
     <span class="mapdist" id="mapdistTop"></span>
@@ -245,9 +259,9 @@ button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible{ou
 (function(){
 'use strict';
 var DS={tennis:null,padel:null,foot:null};
-var state={view:'home',day:null,sport:'tennis',range:null,near:false,cov:false,mapClub:null};
-// créneaux de 2h, soir d'abord
-var RANGES=[[18,20],[20,22],[8,10],[10,12],[12,14],[14,16],[16,18]];
+var state={view:'home',day:null,sport:'tennis',ranges:[],near:false,cov:false,mapClub:null};
+// créneaux de 2h, chronologiques, multi-sélection
+var RANGES=[[8,10],[10,12],[12,14],[14,16],[16,18],[18,20],[20,22]];
 var SPORTMETA={tennis:{label:'Tennis',emoji:'🎾'},padel:{label:'Padel',emoji:'🏓'},foot:{label:'Foot',emoji:'⚽'}};
 var homeDay=null;
 var pos=null,posTried=false,origin={src:null,label:null};
@@ -338,7 +352,7 @@ function filteredSlots(day,ignoreHour){
   var out=[],D=ds();if(!D)return out;
   (D.slots[day]||[]).forEach(function(s){
     if(state.cov && !s.cov)return;
-    if(!ignoreHour && state.range && (s.h<state.range[0]||s.h>=state.range[1]))return;
+    if(!ignoreHour && state.ranges.length && !state.ranges.some(function(r0){return s.h>=r0&&s.h<r0+2;}))return;
     out.push(s);
   });
   return out;
@@ -409,8 +423,7 @@ function renderHours(){
   var rangeCount=function(r){var t=0;for(var h=r[0];h<r[1];h++)t+=counts[h]||0;return t;};
   var maxR=Math.max.apply(null,RANGES.map(rangeCount).concat([1]));
   opts.forEach(function(o){
-    var sel=o.r?(state.range&&state.range[0]===o.r[0]):state.range==null&&false;
-    if(o.r==null)sel=state.range==null;
+    var sel=o.r?state.ranges.indexOf(o.r[0])>=0:state.ranges.length===0;
     var n=o.r==null?maxR:rangeCount(o.r);
     var b=el('button','hchip'+(sel?' sel':'')+(n>0?'':' none'));b.type='button';
     b.appendChild(el('span','t',o.label));
@@ -420,7 +433,11 @@ function renderHours(){
     }
     b.appendChild(g);
     b.addEventListener('click',function(){
-      state.range=(o.r&&!(state.range&&state.range[0]===o.r[0]))?o.r:null;
+      if(o.r==null){state.ranges=[];}
+      else{
+        var i=state.ranges.indexOf(o.r[0]);
+        if(i>=0)state.ranges.splice(i,1);else state.ranges.push(o.r[0]);
+      }
       state.mapClub=null;render();
     });
     nav.appendChild(b);
@@ -468,7 +485,7 @@ function renderList(){
     em.appendChild(document.createTextNode('Aucun créneau avec ces filtres.'));
     em.appendChild(document.createElement('br'));
     var rst=el('button','reset','Réinitialiser');rst.type='button';
-    rst.addEventListener('click',function(){state.cov=false;state.range=null;render();});
+    rst.addEventListener('click',function(){state.cov=false;state.ranges=[];render();});
     em.appendChild(rst);
     list.appendChild(em);
     return;
@@ -513,24 +530,52 @@ function renderList(){
 }
 
 /* ---- vue carte ---- */
-function openMap(sid){
-  state.mapClub=sid;
-  requestPos(function(){renderMap();});
-  renderMap();
-}
-function closeMap(){state.mapClub=null;renderMap();}
-
-function renderMap(){
-  var mv=document.getElementById('mapview');
-  var open=state.mapClub!=null&&ds();
-  mv.hidden=!open;
-  document.body.classList.toggle('maplock',!!open);
-  if(!open)return;
-  var D=ds(),agg=siteAgg();
-  if(agg.ids.indexOf(state.mapClub)<0){state.mapClub=agg.ids[0];}
-  var selId=state.mapClub,selSite=D.sites[selId];
-  // pins : projection des lat/lng sur la zone
+/* pins : vraie carte Leaflet (tuiles CARTO dark) hors artifact, projection stylisée en secours */
+var IS_ARTIFACT=/claudeusercontent\.com$/.test(location.hostname);
+var lmap=null,lmarkers=null,lastFitKey=null;
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function renderPins(agg,selId){
+  var D=ds();
+  var useLeaf=!IS_ARTIFACT&&window.L;
+  document.getElementById('leafmap').hidden=!useLeaf;
+  document.getElementById('mapdeco').hidden=!!useLeaf;
   var pinsHost=document.getElementById('pins');pinsHost.textContent='';
+  if(useLeaf){
+    if(!lmap){
+      lmap=L.map('leafmap',{zoomControl:false});
+      lmap.setView([48.8566,2.3522],12);
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',{maxZoom:16,
+        attribution:'&copy; Esri &copy; OpenStreetMap contributors'}).addTo(lmap);
+      lmarkers=L.layerGroup().addTo(lmap);
+    }
+    lmarkers.clearLayers();
+    var bounds=[];
+    agg.ids.forEach(function(sid){
+      var site=D.sites[sid];if(!site.lat||siteLng(site)==null)return;
+      var sel=sid===selId;
+      var html='<div class="lpin'+(sel?' sel':'')+'"><span class="b">'+agg.bySite[sid].length+'</span>'+
+        (sel?'<span class="nm">'+escHtml(site.name)+'</span>':'')+'</div>';
+      var mk=L.marker([site.lat,siteLng(site)],{
+        icon:L.divIcon({className:'',html:html,iconSize:[0,0]}),
+        zIndexOffset:sel?1000:0
+      });
+      mk.on('click',function(){state.mapClub=sid;renderMap();});
+      lmarkers.addLayer(mk);
+      bounds.push([site.lat,siteLng(site)]);
+    });
+    if(pos){
+      lmarkers.addLayer(L.marker([pos.lat,pos.lng],{
+        icon:L.divIcon({className:'',html:'<div class="lyou"></div>',iconSize:[0,0]}),interactive:false
+      }));
+      bounds.push([pos.lat,pos.lng]);
+    }
+    var key=agg.ids.join(',')+'|'+(pos?1:0);
+    setTimeout(function(){
+      lmap.invalidateSize();
+      if(bounds.length&&key!==lastFitKey){lmap.fitBounds(bounds,{padding:[50,50],maxZoom:15});lastFitKey=key;}
+    },0);
+    return;
+  }
   var lats=agg.ids.map(function(i){return D.sites[i].lat;}).filter(Boolean);
   var lngs=agg.ids.map(function(i){return siteLng(D.sites[i]);}).filter(Boolean);
   var la0=Math.min.apply(null,lats),la1=Math.max.apply(null,lats);
@@ -548,6 +593,25 @@ function renderMap(){
     p.addEventListener('click',function(){state.mapClub=sid;renderMap();});
     pinsHost.appendChild(p);
   });
+}
+
+function openMap(sid){
+  state.mapClub=sid;
+  requestPos(function(){renderMap();});
+  renderMap();
+}
+function closeMap(){state.mapClub=null;renderMap();}
+
+function renderMap(){
+  var mv=document.getElementById('mapview');
+  var open=state.mapClub!=null&&ds();
+  mv.hidden=!open;
+  document.body.classList.toggle('maplock',!!open);
+  if(!open)return;
+  var D=ds(),agg=siteAgg();
+  if(agg.ids.indexOf(state.mapClub)<0){state.mapClub=agg.ids[0];}
+  var selId=state.mapClub,selSite=D.sites[selId];
+  renderPins(agg,selId);
   document.getElementById('mapdistTop').textContent=distLabel(selSite);
   // bottom sheet
   var sheet=document.getElementById('sheet');sheet.textContent='';
@@ -654,7 +718,7 @@ function renderHome(){
     var ar=el('span','ar','→');ar.style.color=c.a;
     b.appendChild(ar);
     b.addEventListener('click',function(){
-      state.sport=sp;state.range=null;state.mapClub=null;
+      state.sport=sp;state.ranges=[];state.mapClub=null;
       var DD=ds();
       state.day=DD?(DD.days.indexOf(homeDay)>=0&&(DD.slots[homeDay]||[]).length?homeDay:(DD.days.find(function(day){return (DD.slots[day]||[]).length>0;})||DD.days[0])):null;
       state.view='list';render();
@@ -684,7 +748,7 @@ function render(){applyAccent();renderHome();renderLive();renderHero();renderDay
 
 function switchSport(sp){
   if(sp===state.sport)return;
-  state.sport=sp;state.range=null;state.mapClub=null;
+  state.sport=sp;state.ranges=[];state.mapClub=null;
   var D=ds();
   state.day=D?(D.days.find(function(day){return (D.slots[day]||[]).length>0;})||D.days[0]):null;
   render();
