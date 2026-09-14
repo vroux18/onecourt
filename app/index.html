@@ -1,431 +1,386 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html lang="fr"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07090b">
 <title>OneCourt</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&display=swap">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ground:#EDF0EB;
-  --surface:#F7F8F5;
-  --surface2:#E3E8E1;
-  --ink:#1C2B24;
-  --ink-soft:#5A6B61;
-  --line:#C9D2C8;
-  --clay:#BC5228;
-  --clay-ink:#FFFFFF;
-  --green:#1E5C41;
-  --green-soft:#DCE9DF;
-  --pill:#FFFFFF;
-  --pill-border:#C9D2C8;
-  --warn:#8A6D1F;
-  --warn-bg:#F3EAC9;
-  --shadow:0 1px 3px rgba(28,43,36,.08);
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --ground:#0F1712;
-    --surface:#16211A;
-    --surface2:#1E2C23;
-    --ink:#E6EAE2;
-    --ink-soft:#93A498;
-    --line:#2C3B31;
-    --clay:#D96A3B;
-    --clay-ink:#14100C;
-    --green:#4C9A70;
-    --green-soft:#1C332687;
-    --pill:#1B2820;
-    --pill-border:#31423699;
-    --warn:#D9B44A;
-    --warn-bg:#2E2712;
-    --shadow:0 1px 3px rgba(0,0,0,.35);
-  }
-}
-:root[data-theme="dark"]{
-  --ground:#0F1712;
-  --surface:#16211A;
-  --surface2:#1E2C23;
-  --ink:#E6EAE2;
-  --ink-soft:#93A498;
-  --line:#2C3B31;
-  --clay:#D96A3B;
-  --clay-ink:#14100C;
-  --green:#4C9A70;
-  --green-soft:#1C332687;
-  --pill:#1B2820;
-  --pill-border:#31423699;
-  --warn:#D9B44A;
-  --warn-bg:#2E2712;
-  --shadow:0 1px 3px rgba(0,0,0,.35);
+  --a:#00e676; --a-dark:#04250f; --a-bg:#00e67612; --a-border:#00e67644;
+  --bg:#07090b; --card:#10141788; --ink:#f2f5f2; --ink-soft:#79837f; --ink-dim:#5a635e;
+  --chip-bg:#151a1d; --chip-border:#262d31; --chip-ink:#c9d1cd;
+  --line:#232a2e; --track:#20262b; --ring-off:#3d454b;
+  --warn:#ffb02e; --warn-bg:#ffb02e14; --warn-border:#ffb02e44;
+  color-scheme:dark;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%}
 body{
-  margin:0;background:var(--ground);color:var(--ink);
-  font-family:"Instrument Sans",system-ui,-apple-system,sans-serif;
-  font-size:15px;line-height:1.45;
-  padding-inline:16px;padding-block:0 96px;
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:'Sora',system-ui,-apple-system,sans-serif;
+  font-size:14px;line-height:1.45;
+  padding-inline:22px;
+  padding-block:calc(26px + env(safe-area-inset-top,0px)) calc(130px + env(safe-area-inset-bottom,0px));
+  overflow-x:hidden;
 }
-.wrap{max-width:760px;margin:0 auto}
-/* bottom sport bandeau */
-.sportbar{
-  position:fixed;left:0;right:0;bottom:0;z-index:50;
-  background:var(--surface);border-top:1px solid var(--line);
-  box-shadow:0 -2px 12px rgba(28,43,36,.08);
-  padding:8px 16px calc(8px + env(safe-area-inset-bottom,0px));
-}
-.sportbar-inner{max-width:760px;margin:0 auto;display:flex;gap:8px}
-.sportbtn{
-  flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
-  border:1px solid var(--pill-border);background:var(--pill);color:var(--ink);
-  border-radius:11px;padding:8px 4px;cursor:pointer;font-family:inherit;
-}
-.sportbtn .lbl{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:16px;text-transform:uppercase;letter-spacing:.04em;line-height:1}
-.sportbtn .sub{font-size:11px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
-.sportbtn.on{background:var(--green);border-color:var(--green)}
-.sportbtn.on .lbl{color:#fff}
-.sportbtn.on .sub{color:#D6E7DB}
-.sportbtn.soon{opacity:.72}
-header.app{padding-block:22px 6px}
-.brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
-.wordmark{
-  font-family:"Barlow Condensed",Arial Narrow,sans-serif;font-weight:700;
-  font-size:40px;line-height:.95;letter-spacing:.5px;text-transform:uppercase;margin:0;
-}
-.wordmark .lc{color:var(--clay)}
-.tagline{color:var(--ink-soft);font-size:13px}
-.courtline{height:3px;background:var(--green);border-radius:2px;margin-top:10px;position:relative}
-.courtline::after{content:"";position:absolute;left:50%;top:-4px;width:2px;height:11px;background:var(--green)}
-.updated{font-size:12px;color:var(--ink-soft);margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.updated .stale{color:var(--warn);background:var(--warn-bg);padding:2px 8px;border-radius:99px;font-weight:600}
-/* day strip */
-.days{display:flex;gap:8px;overflow-x:auto;padding-block:14px 4px;scrollbar-width:none}
-.days::-webkit-scrollbar{display:none}
-.day{
-  flex:0 0 auto;min-width:74px;border:1px solid var(--pill-border);background:var(--pill);
-  border-radius:10px;padding:8px 10px;text-align:center;cursor:pointer;
-  font-family:inherit;color:var(--ink);
-}
-.day .dow{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft)}
-.day .num{display:block;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:24px;line-height:1.1;font-variant-numeric:tabular-nums}
-.day .cnt{display:block;font-size:11px;color:var(--green);font-weight:600;font-variant-numeric:tabular-nums}
-.day.sel{background:var(--green);border-color:var(--green)}
-.day.sel .dow,.day.sel .cnt{color:#E9F2EA}
-.day.sel .num{color:#FFFFFF}
-.day.empty .cnt{color:var(--ink-soft);font-weight:400}
+::-webkit-scrollbar{display:none}
+.glow{position:fixed;border-radius:50%;pointer-events:none;transition:background .5s;z-index:0}
+#glow1{top:-100px;left:-60px;width:320px;height:320px;background:radial-gradient(circle,var(--g1),transparent 66%)}
+#glow2{bottom:-80px;right:-80px;width:280px;height:280px;background:radial-gradient(circle,var(--g2),transparent 66%)}
+.wrap{max-width:430px;margin:0 auto;position:relative;z-index:1}
+/* header */
+.top{display:flex;justify-content:space-between;align-items:center}
+.wordmark{font-weight:800;font-size:21px;letter-spacing:-.5px}
+.wordmark .dot{color:var(--a);transition:color .4s}
+.maj{font-weight:700;font-size:10.5px;color:var(--a);border:1px solid var(--a-border);border-radius:99px;padding:5px 11px;background:var(--a-bg);white-space:nowrap}
+.maj.stale{color:var(--warn);border-color:var(--warn-border);background:var(--warn-bg)}
+/* hero */
+.hero{margin-top:20px;font-weight:800;font-size:36px;line-height:1.15;letter-spacing:-1.5px}
+.hero .n{color:var(--a);transition:color .4s}
+/* days */
+.days{display:flex;gap:10px;margin-top:20px;overflow-x:auto;margin-inline:-22px;padding:8px 22px;scrollbar-width:none}
+.day{flex:none;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;background:none;border:none;padding:0;font-family:inherit;color:var(--ink)}
+.day .ring{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .3s}
+.day .core{width:46px;height:46px;border-radius:50%;background:#0d1114;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.day .num{font-weight:800;font-size:16px;line-height:1;color:var(--ink)}
+.day .cnt{font-weight:600;font-size:8px;color:var(--ink-dim);margin-top:1px}
+.day .lbl{font-weight:700;font-size:10px;color:var(--ink-soft)}
+.day.sel .num,.day.sel .lbl{color:var(--a)}
 /* filters */
-.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding-block:10px 4px}
-.chip{
-  border:1px solid var(--pill-border);background:var(--pill);color:var(--ink);
-  border-radius:99px;padding:6px 13px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;
+.filters{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.chip{font-weight:600;font-size:12px;background:var(--chip-bg);border:1px solid var(--chip-border);color:var(--chip-ink);border-radius:99px;padding:8px 14px;white-space:nowrap;cursor:pointer;font-family:inherit}
+.chip.on{font-weight:700;background:var(--a);border-color:var(--a);color:var(--a-dark)}
+select.chip{appearance:none;-webkit-appearance:none;padding-right:28px;background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:calc(100% - 16px) 55%,calc(100% - 11px) 55%;background-size:5px 5px;background-repeat:no-repeat}
+/* list */
+.meta-line{font-weight:500;font-size:11.5px;color:var(--ink-soft);margin-top:18px}
+.clubs{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.club{background:var(--card);border:1px solid var(--line);backdrop-filter:blur(10px);border-radius:22px;padding:16px;cursor:pointer;transition:border-color .3s;text-align:left;font-family:inherit;color:var(--ink);width:100%}
+.club.open{border-color:color-mix(in srgb,var(--a) 33%,transparent)}
+.club-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.club-name{font-weight:700;font-size:16px}
+.club-arr{font-weight:700;font-size:11px;color:var(--a);flex:none}
+.club-meta{font-size:11.5px;color:var(--ink-soft);margin-top:2px}
+.bar{height:34px;border-radius:8px;margin-top:14px;position:relative}
+.bar span{position:absolute;top:50%;transform:translateY(-50%);font-weight:800;font-size:12px;color:var(--a-dark);white-space:nowrap}
+.ticks{display:flex;justify-content:space-between;margin-top:5px;font-weight:600;font-size:9.5px;color:var(--ink-dim)}
+.detail{display:flex;flex-direction:column;gap:8px;margin-top:14px;border-top:1px solid var(--line);padding-top:14px}
+.row{display:flex;align-items:center;gap:12px}
+.row .t{font-weight:800;font-size:14px;color:var(--a);width:44px;flex:none}
+.row .mid{flex:1;min-width:0}
+.row .lab{font-weight:600;font-size:12.5px}
+.row .sub{font-size:10.5px;color:var(--ink-soft)}
+.row .pr{font-weight:700;font-size:12.5px;color:var(--chip-ink);flex:none}
+.row .book{font-weight:800;font-size:11px;background:var(--a);color:var(--a-dark);border-radius:99px;padding:7px 12px;white-space:nowrap;text-decoration:none;flex:none}
+.book-note{font-size:10px;color:var(--ink-dim);margin-top:2px}
+/* empty states */
+.empty{text-align:center;padding:40px 20px;color:var(--ink-soft);font-size:13px}
+.empty .reset{color:var(--a);font-weight:700;cursor:pointer;background:none;border:none;font-family:inherit;font-size:13px;padding:0}
+.bigcard{margin-top:32px;text-align:center;padding:36px 24px;background:var(--card);border:1px dashed #2a3236;border-radius:24px}
+.bigcard .ico{width:56px;height:56px;border-radius:50%;background:var(--a-bg);border:1px solid var(--a-border);margin:0 auto;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;color:var(--a)}
+.bigcard .h{font-weight:700;font-size:16px;margin-top:14px;color:var(--ink)}
+.bigcard .p{font-size:12px;color:var(--ink-soft);margin-top:6px;line-height:1.5}
+/* tab bar */
+.tabbar{
+  position:fixed;left:22px;right:22px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:50;
+  display:flex;gap:6px;background:#12171add;border:1px solid var(--line);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:22px;padding:6px;
+  max-width:430px;margin:0 auto;
 }
-.chip.on{background:var(--clay);border-color:var(--clay);color:var(--clay-ink);font-weight:600}
-select.chip{appearance:none;-webkit-appearance:none;padding-right:26px;background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:calc(100% - 15px) 55%,calc(100% - 10px) 55%;background-size:5px 5px;background-repeat:no-repeat}
-.summary{font-size:13px;color:var(--ink-soft);padding-block:8px 2px;font-variant-numeric:tabular-nums}
-.summary b{color:var(--ink)}
-/* site cards */
-.site{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin-top:12px;box-shadow:var(--shadow);overflow:hidden}
-.site-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:13px 15px 0}
-.site-name{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:22px;text-transform:uppercase;letter-spacing:.03em;margin:0;line-height:1.05}
-.arr{flex:0 0 auto;font-size:12px;font-weight:600;color:var(--green);background:var(--green-soft);border-radius:6px;padding:2px 7px;font-variant-numeric:tabular-nums}
-.site-sub{padding:2px 15px 0;font-size:12.5px;color:var(--ink-soft)}
-.hours{display:flex;flex-wrap:wrap;gap:7px;padding:11px 15px 14px}
-.hpill{
-  border:1px solid var(--pill-border);background:var(--pill);border-radius:9px;
-  padding:5px 10px;cursor:pointer;display:flex;align-items:baseline;gap:5px;font-family:inherit;color:var(--ink);
-}
-.hpill .h{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:19px;line-height:1;font-variant-numeric:tabular-nums}
-.hpill .n{font-size:11px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
-.hpill.night .h::after{content:"·";color:var(--clay);margin-left:2px}
-.hpill.sel{background:var(--clay);border-color:var(--clay)}
-.hpill.sel .h{color:var(--clay-ink)}
-.hpill.sel .n{color:var(--clay-ink);opacity:.75}
-.detail{border-top:1px dashed var(--line);padding:10px 15px 13px;display:flex;flex-direction:column;gap:7px}
-.court-row{display:flex;justify-content:space-between;gap:10px;align-items:baseline;font-size:13.5px}
-.court-row .cn{font-weight:600}
-.court-row .meta{color:var(--ink-soft);font-size:12.5px}
-.court-row .pr{font-variant-numeric:tabular-nums;font-weight:600;color:var(--green);flex:0 0 auto}
-.tag{display:inline-block;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;border-radius:4px;padding:1px 5px;margin-left:5px;vertical-align:1px}
-.tag.cov{background:var(--green-soft);color:var(--green)}
-.tag.ecl{border:1px solid var(--pill-border);color:var(--ink-soft)}
-.detail .book{align-self:flex-start;margin-top:4px;background:var(--green);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-weight:600;font-size:13px;cursor:pointer;text-decoration:none}
-.empty{margin-top:26px;text-align:center;color:var(--ink-soft);padding:34px 16px;border:1px dashed var(--line);border-radius:14px}
-.empty .big{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:26px;text-transform:uppercase;color:var(--ink);display:block;margin-bottom:4px}
-footer{margin-top:34px;font-size:12px;color:var(--ink-soft);text-align:center;line-height:1.7}
-footer a{color:var(--green)}
-button:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--clay);outline-offset:2px}
-@media (prefers-reduced-motion: no-preference){
-  .site{transition:border-color .15s}
-}
-@media (max-width:420px){
-  .wordmark{font-size:34px}
-}
+.tab{flex:1;background:transparent;border:none;border-radius:17px;padding:9px 0 8px;text-align:center;cursor:pointer;transition:background .3s;font-family:inherit}
+.tab .lbl{font-weight:800;font-size:12.5px;color:var(--ink-soft)}
+.tab .cnt{font-weight:600;font-size:9px;color:var(--ink-dim)}
+.tab.on{background:var(--a)}
+.tab.on .lbl{color:var(--a-dark)}
+.tab.on .cnt{color:color-mix(in srgb,var(--a-dark) 80%,transparent)}
+button:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--a);outline-offset:2px}
 </style>
+</head><body>
+<div class="glow" id="glow1"></div>
+<div class="glow" id="glow2"></div>
 <div class="wrap">
-<header class="app">
-  <div class="brand">
-    <h1 class="wordmark">One<span class="lc">Court</span></h1>
-    <span class="tagline" id="tagline">Créneaux disponibles · tennis municipaux de Paris</span>
+  <div class="top">
+    <span class="wordmark">onecourt<span class="dot">.</span></span>
+    <span class="maj" id="maj" hidden></span>
   </div>
-  <div class="courtline"></div>
-  <div class="updated" id="updated"></div>
-</header>
-
-<nav class="days" id="days" aria-label="Choix du jour"></nav>
-
-<div class="filters" id="filters">
-  <select class="chip" id="fArr" aria-label="Arrondissement"><option value="">Tous les arr.</option></select>
-  <select class="chip" id="fSurf" aria-label="Surface"><option value="">Toutes surfaces</option></select>
-  <button class="chip" id="fCov" type="button">Couvert</button>
-  <button class="chip" id="fEcl" type="button">Éclairé</button>
-  <button class="chip" id="fSoir" type="button">Soir 18h+</button>
-</div>
-<div class="summary" id="summary"></div>
-<main id="list"></main>
-<footer id="footer">
-  Données scrapées chaque matin depuis <a href="https://tennis.paris.fr/tennis/jsp/site/Portal.jsp?page=recherche&view=recherche_creneau" target="_blank" rel="noopener">tennis.paris.fr</a>.<br>
-  La réservation se fait sur le site officiel (connexion Mon Paris requise).
-</footer>
-</div>
-
-<nav class="sportbar" id="sportbar" aria-label="Choix du sport">
-  <div class="sportbar-inner">
-    <button class="sportbtn on" type="button" data-sport="tennis"><span class="lbl">Tennis</span><span class="sub" id="cnt-tennis">—</span></button>
-    <button class="sportbtn soon" type="button" data-sport="padel"><span class="lbl">Padel</span><span class="sub" id="cnt-padel">—</span></button>
-    <button class="sportbtn soon" type="button" data-sport="foot"><span class="lbl">Foot</span><span class="sub" id="cnt-foot">—</span></button>
+  <div class="hero" id="hero"></div>
+  <nav class="days" id="days" aria-label="Choix du jour"></nav>
+  <div class="filters" id="filters">
+    <select class="chip" id="fArr" aria-label="Arrondissement"><option value="">Tous les arr.</option></select>
+    <button class="chip" id="fCov" type="button">Couvert</button>
+    <button class="chip" id="fSoir" type="button">Soir 18h+</button>
   </div>
+  <div class="meta-line" id="metaLine"></div>
+  <main id="list" class="clubs"></main>
+</div>
+<nav class="tabbar" aria-label="Choix du sport">
+  <button class="tab on" type="button" data-sport="tennis"><div class="lbl">Tennis</div><div class="cnt" id="cnt-tennis">—</div></button>
+  <button class="tab" type="button" data-sport="padel"><div class="lbl">Padel</div><div class="cnt" id="cnt-padel">—</div></button>
+  <button class="tab" type="button" data-sport="foot"><div class="lbl">Foot</div><div class="cnt" id="cnt-foot">—</div></button>
 </nav>
-
 <script>
 (function(){
 'use strict';
 var DS={tennis:null,padel:null,foot:null};
-var state={day:null, sport:'tennis', arr:'', surf:'', cov:false, ecl:false, soir:false, open:{}};
+var state={day:null,sport:'tennis',arr:'',cov:false,soir:false,open:null};
 var DOW=['dim.','lun.','mar.','mer.','jeu.','ven.','sam.'];
-var MONTHS=['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+var DOWU=['DIM','LUN','MAR','MER','JEU','VEN','SAM'];
 var RESA_TENNIS='https://tennis.paris.fr/tennis/jsp/site/Portal.jsp?page=recherche&view=recherche_creneau';
-var TAGLINE={tennis:'Créneaux disponibles · tennis municipaux de Paris',
-  padel:'Créneaux disponibles · clubs de padel · Paris & couronne',
-  foot:'Foot en salle · Paris'};
+var A={
+  tennis:{a:'#00e676',dark:'#04250f',bg:'#00e67612',border:'#00e67644',g1:'#00e67655',g2:'#c6ff4e2a'},
+  padel:{a:'#00c2ff',dark:'#03222e',bg:'#00c2ff12',border:'#00c2ff44',g1:'#00c2ff55',g2:'#7cd8ff2a'},
+  foot:{a:'#ffb02e',dark:'#2b1c03',bg:'#ffb02e12',border:'#ffb02e44',g1:'#ffb02e44',g2:'#ffd68a22'}
+};
+var NOTE={tennis:'Réservation sur tennis.paris.fr — compte Mon Paris requis.',
+  padel:'Réservation via Anybuddy — prix par piste.'};
 
 try{var saved=JSON.parse(localStorage.getItem('onecourt')||'{}');
-  ['arr','surf','cov','ecl','soir','sport'].forEach(function(k){if(k in saved)state[k]=saved[k];});
+  ['arr','cov','soir','sport'].forEach(function(k){if(k in saved)state[k]=saved[k];});
 }catch(e){}
-function persist(){try{localStorage.setItem('onecourt',JSON.stringify({arr:state.arr,surf:state.surf,cov:state.cov,ecl:state.ecl,soir:state.soir,sport:state.sport}));}catch(e){}}
+function persist(){try{localStorage.setItem('onecourt',JSON.stringify({arr:state.arr,cov:state.cov,soir:state.soir,sport:state.sport}));}catch(e){}}
 
 function ds(){return DS[state.sport];}
 function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
-function fmtDate(iso){var d=new Date(iso+'T12:00:00');return {dow:DOW[d.getDay()],num:d.getDate(),mon:MONTHS[d.getMonth()]};}
+function applyAccent(){
+  var c=A[state.sport],r=document.documentElement.style;
+  r.setProperty('--a',c.a);r.setProperty('--a-dark',c.dark);
+  r.setProperty('--a-bg',c.bg);r.setProperty('--a-border',c.border);
+  r.setProperty('--g1',c.g1);r.setProperty('--g2',c.g2);
+}
 
 function filteredSlots(day){
-  var out=[];var D=ds();if(!D)return out;
-  var arr=state.arr,surf=state.surf;
+  var out=[],D=ds();if(!D)return out;
   (D.slots[day]||[]).forEach(function(s){
     var site=D.sites[s.s];
-    if(arr!=='' && String(site.arr)!==arr)return;
-    if(surf!=='' && s.surf!==surf)return;
+    if(state.arr!=='' && String(site.arr)!==state.arr)return;
     if(state.cov && !s.cov)return;
-    if(state.ecl && !s.ecl)return;
     if(state.soir && s.h<18)return;
     out.push(s);
   });
   return out;
 }
 
+function renderMaj(){
+  var m=document.getElementById('maj');
+  var D=ds();
+  if(!D||!D.generated_at){m.hidden=true;return;}
+  var gen=new Date(D.generated_at);
+  var hrs=(Date.now()-gen.getTime())/36e5;
+  var hm=gen.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  m.hidden=false;
+  m.classList.toggle('stale',hrs>30);
+  m.textContent=hrs>30?'● données anciennes':'● maj '+hm;
+}
+
+function renderHero(){
+  var h=document.getElementById('hero');h.textContent='';
+  var D=ds();
+  if(!D){
+    h.appendChild(el('span','n','Foot'));
+    h.appendChild(document.createElement('br'));
+    h.appendChild(document.createTextNode('pas encore dispo'));
+    return;
+  }
+  var n=filteredSlots(state.day).length;
+  var d=new Date(state.day+'T12:00:00');
+  var today=new Date();
+  var isToday=d.toDateString()===today.toDateString();
+  h.appendChild(el('span','n',n+' créneaux'));
+  h.appendChild(document.createElement('br'));
+  h.appendChild(document.createTextNode(isToday?'libres aujourd’hui':'libres '+DOW[d.getDay()]+' '+d.getDate()));
+}
+
 function renderDays(){
   var nav=document.getElementById('days');nav.textContent='';
-  var D=ds();if(!D){return;}
-  D.days.forEach(function(day){
-    var n=filteredSlots(day).length;
-    var b=el('button','day'+(day===state.day?' sel':'')+(n===0?' empty':''));
-    b.type='button';
-    var f=fmtDate(day);
-    b.appendChild(el('span','dow',f.dow+' '+f.mon));
-    b.appendChild(el('span','num',String(f.num)));
-    b.appendChild(el('span','cnt',n>0?n+' crén.':'complet'));
-    b.addEventListener('click',function(){state.day=day;state.open={};render();});
+  var D=ds();if(!D)return;
+  var counts=D.days.map(function(day){return filteredSlots(day).length;});
+  var max=Math.max.apply(null,counts.concat([1]));
+  D.days.forEach(function(day,i){
+    var n=counts[i];
+    var sel=day===state.day;
+    var r=Math.round(n/max*100);
+    var b=el('button','day'+(sel?' sel':''));b.type='button';
+    var ring=el('div','ring');
+    var on=sel?'var(--a)':'var(--ring-off)';
+    ring.style.background='conic-gradient('+on+' 0 '+r+'%, var(--track) '+r+'% 100%)';
+    var core=el('div','core');
+    var d=new Date(day+'T12:00:00');
+    core.appendChild(el('span','num',String(d.getDate())));
+    core.appendChild(el('span','cnt',n>0?String(n):'—'));
+    ring.appendChild(core);
+    b.appendChild(ring);
+    b.appendChild(el('span','lbl',DOWU[d.getDay()]));
+    b.addEventListener('click',function(){state.day=day;state.open=null;render();});
     nav.appendChild(b);
   });
 }
 
 function renderList(){
   var list=document.getElementById('list');list.textContent='';
-  var sum=document.getElementById('summary');sum.textContent='';
+  var meta=document.getElementById('metaLine');meta.textContent='';
   var D=ds();
-  var slots=D?filteredSlots(state.day):[];
+  if(!D){
+    if(state.sport==='foot'){
+      var bc=el('div','bigcard');
+      bc.appendChild(el('div','ico','⋯'));
+      bc.appendChild(el('div','h','Le foot arrive bientôt'));
+      bc.appendChild(el('div','p','Pas encore de source ouverte pour les terrains de foot à Paris. On te préviendra dès que c’est dispo.'));
+      list.appendChild(bc);
+    }else{
+      var bc2=el('div','bigcard');
+      bc2.appendChild(el('div','ico','!'));
+      bc2.appendChild(el('div','h','Données indisponibles'));
+      bc2.appendChild(el('div','p','Le fichier de créneaux n’a pas pu être chargé. Réessaye plus tard.'));
+      list.appendChild(bc2);
+    }
+    return;
+  }
+  var slots=filteredSlots(state.day);
   if(!slots.length){
     var em=el('div','empty');
-    if(state.sport==='foot'){
-      em.appendChild(el('span','big','Foot — pas de source'));
-      em.appendChild(el('span',null,'Aucune source ouverte : UrbanSoccer est fermé et protégé anti-bot. Rien à afficher pour l’instant.'));
-    }else if(state.sport==='padel' && !D){
-      em.appendChild(el('span','big','Padel — à brancher'));
-      em.appendChild(el('span',null,'Lance anybuddy_padel.py sur ta machine puis renvoie-moi padel.json pour remplir cet onglet.'));
-    }else{
-      em.appendChild(el('span','big','Complet'));
-      em.appendChild(el('span',null,'Aucun créneau ne correspond à ces filtres ce jour-là.'));
-    }
+    em.appendChild(document.createTextNode('Aucun créneau avec ces filtres.'));
+    em.appendChild(document.createElement('br'));
+    var rst=el('button','reset','Réinitialiser');rst.type='button';
+    rst.addEventListener('click',function(){state.arr='';state.cov=false;state.soir=false;render();});
+    em.appendChild(rst);
     list.appendChild(em);
     return;
   }
-  var f=fmtDate(state.day);
   var bySite={};
   slots.forEach(function(s){(bySite[s.s]=bySite[s.s]||[]).push(s);});
   var siteIds=Object.keys(bySite).map(Number).sort(function(a,b){
-    var A=D.sites[a],B=D.sites[b];
-    return (A.arr-B.arr)||A.name.localeCompare(B.name);
+    var Aa=D.sites[a],Bb=D.sites[b];
+    return (Aa.arr-Bb.arr)||Aa.name.localeCompare(Bb.name);
   });
-  var b1=el('b',null,slots.length+' créneaux');
-  sum.appendChild(b1);
-  sum.appendChild(document.createTextNode(' · '+siteIds.length+' sites · '+f.dow+' '+f.num+' '+f.mon));
+  meta.textContent=slots.length+' créneaux · '+siteIds.length+' sites';
   siteIds.forEach(function(sid){
     var site=D.sites[sid];
-    var card=el('section','site');
-    var head=el('div','site-head');
-    head.appendChild(el('h2','site-name',site.name));
-    head.appendChild(el('span','arr',site.arr>0&&site.arr<=20?site.arr+'ᵉ':'Ext.'));
+    var ss=bySite[sid];
+    var open=state.open===sid;
+    var card=el('section','club'+(open?' open':''));
+    card.tabIndex=0;card.setAttribute('role','button');
+    var head=el('div','club-head');
+    head.appendChild(el('span','club-name',site.name));
+    head.appendChild(el('span','club-arr',site.arr>0&&site.arr<=20?site.arr+'ᵉ':'Hors Paris'));
     card.appendChild(head);
-    card.appendChild(el('div','site-sub',(site.adresse||'')+(site.cp?' · '+site.cp:'')));
-    var byHour={};
-    bySite[sid].forEach(function(s){(byHour[s.h]=byHour[s.h]||[]).push(s);});
-    var hoursDiv=el('div','hours');
-    var hours=Object.keys(byHour).map(Number).sort(function(a,b){return a-b;});
-    hours.forEach(function(h){
-      var key=sid+'_'+h;
-      var p=el('button','hpill'+(h>=18?' night':'')+(state.open[key]?' sel':''));
-      p.type='button';
-      p.appendChild(el('span','h',(h<10?'0':'')+h+'h'));
-      p.appendChild(el('span','n','×'+byHour[h].length));
-      p.addEventListener('click',function(){state.open[key]=!state.open[key];render();});
-      hoursDiv.appendChild(p);
-    });
-    card.appendChild(hoursDiv);
-    hours.forEach(function(h){
-      var key=sid+'_'+h;
-      if(!state.open[key])return;
+    var surfs={};ss.forEach(function(s){if(s.surf&&s.surf!=='Padel')surfs[s.surf.toLowerCase()]=1;});
+    var bits=[site.adresse||''];
+    var sk=Object.keys(surfs);if(sk.length)bits.push(sk.join(' / '));
+    if(ss.some(function(s){return s.cov;}))bits.push('couvert');
+    if(ss.some(function(s){return s.ecl;}))bits.push('éclairé');
+    card.appendChild(el('div','club-meta',bits.filter(Boolean).join(' · ')));
+    // availability bar 8h→22h
+    var hrs=ss.map(function(s){return s.h;});
+    var min=Math.min.apply(null,hrs),max=Math.max.apply(null,hrs)+1;
+    var a=Math.max(0,(min-8)/14*100),b=Math.min(100,(max-8)/14*100);
+    var bar=el('div','bar');
+    bar.style.background='linear-gradient(90deg,var(--track) 0 '+a+'%, var(--a) '+a+'% '+b+'%, var(--track) '+b+'% 100%)';
+    var bt=el('span',null,min+'h – '+max+'h');
+    bt.style.left='calc('+a+'% + 10px)';
+    bar.appendChild(bt);
+    card.appendChild(bar);
+    var ticks=el('div','ticks');
+    ['8h','12h','16h','20h','22h'].forEach(function(t){ticks.appendChild(el('span',null,t));});
+    card.appendChild(ticks);
+    if(open){
       var det=el('div','detail');
-      byHour[h].sort(function(a,b){return String(a.c).localeCompare(String(b.c),undefined,{numeric:true});});
-      byHour[h].forEach(function(s){
-        var row=el('div','court-row');
-        var left=el('div');
-        left.appendChild(el('span','cn',(h<10?'0':'')+h+'h – '+s.c));
-        if(s.cov)left.appendChild(el('span','tag cov','Couvert'));
-        if(s.ecl)left.appendChild(el('span','tag ecl','Éclairé'));
-        left.appendChild(el('div','meta',s.surf+(s.t?' · '+s.t:'')));
-        row.appendChild(left);
-        row.appendChild(el('span','pr',s.p));
+      var byHour={};
+      ss.forEach(function(s){(byHour[s.h]=byHour[s.h]||[]).push(s);});
+      Object.keys(byHour).map(Number).sort(function(x,y){return x-y;}).forEach(function(h){
+        var grp=byHour[h];
+        var row=el('div','row');
+        row.appendChild(el('span','t',h+'h'));
+        var mid=el('div','mid');
+        var isPadel=state.sport==='padel';
+        mid.appendChild(el('div','lab',grp.length+(isPadel?(grp.length>1?' créneaux':' créneau'):(grp.length>1?' courts libres':' court libre'))));
+        var metas={};grp.forEach(function(s){var m=isPadel?s.c:(s.surf||'').toLowerCase();if(m)metas[m]=1;});
+        var mtxt=Object.keys(metas).join(' / ');
+        mid.appendChild(el('div','sub',isPadel?mtxt:mtxt+(mtxt?' · ':'')+'1h'));
+        row.appendChild(mid);
+        var prices=grp.map(function(s){return parseFloat(String(s.p).replace(',','.'));}).filter(function(x){return !isNaN(x);});
+        var ptxt='';
+        if(prices.length){
+          var pmin=Math.min.apply(null,prices);
+          ptxt=(prices.some(function(x){return x!==pmin;})?'dès ':'')+pmin+' €';
+        }
+        row.appendChild(el('span','pr',ptxt));
+        var bk=el('a','book','Réserver');
+        bk.href=site.url||RESA_TENNIS;bk.target='_blank';bk.rel='noopener';
+        bk.addEventListener('click',function(e){e.stopPropagation();});
+        row.appendChild(bk);
         det.appendChild(row);
       });
-      var a=el('a','book',state.sport==='padel'?'Réserver sur Anybuddy':'Réserver sur tennis.paris.fr');
-      a.href=site.url||RESA_TENNIS;a.target='_blank';a.rel='noopener';
-      det.appendChild(a);
+      det.appendChild(el('div','book-note',NOTE[state.sport]||''));
       card.appendChild(det);
-    });
+    }
+    function toggle(){state.open=open?null:sid;render();}
+    card.addEventListener('click',toggle);
+    card.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});
     list.appendChild(card);
   });
 }
 
-function renderChrome(){
-  document.getElementById('tagline').textContent=TAGLINE[state.sport]||'';
-  // filtres spécifiques tennis
-  var tennisOnly=state.sport==='tennis';
-  ['fSurf','fCov','fEcl'].forEach(function(id){var e=document.getElementById(id);if(e)e.hidden=!tennisOnly;});
-  // pied de page selon source
-  var foot=document.getElementById('footer');
-  if(state.sport==='padel'){
-    foot.innerHTML='Données Anybuddy (4Padel, UCPA, Paris Padel, Sportfield, Forest Hill…).<br>Refresh manuel via anybuddy_padel.py. Réservation sur Anybuddy.';
-  }else if(state.sport==='foot'){
-    foot.innerHTML='Aucune source de données foot branchée pour l’instant.';
-  }else{
-    foot.innerHTML='Données scrapées chaque matin depuis <a href="'+RESA_TENNIS+'" target="_blank" rel="noopener">tennis.paris.fr</a>.<br>La réservation se fait sur le site officiel (connexion Mon Paris requise).';
-  }
+function renderFilters(){
+  var f=document.getElementById('filters');
+  f.hidden=!ds();
+  document.getElementById('fCov').hidden=state.sport!=='tennis';
+  document.getElementById('fCov').classList.toggle('on',state.cov);
+  document.getElementById('fSoir').classList.toggle('on',state.soir);
+  document.getElementById('fArr').value=state.arr;
+  document.getElementById('metaLine').hidden=!ds();
 }
 
-function renderSportbar(){
-  var counts={tennis:DS.tennis?DS.tennis.total:0, padel:DS.padel?DS.padel.total:0, foot:DS.foot?DS.foot.total:0};
+function rebuildArrOptions(){
+  var D=ds(),fa=document.getElementById('fArr');
+  fa.length=1;
+  if(!D)return;
+  var arrs={};
+  D.days.forEach(function(d){(D.slots[d]||[]).forEach(function(s){arrs[D.sites[s.s].arr]=1;});});
+  Object.keys(arrs).map(Number).sort(function(a,b){return a-b;}).forEach(function(a){
+    var o=document.createElement('option');o.value=String(a);
+    o.textContent=a>0&&a<=20?a+'ᵉ arr.':'Hors Paris';fa.appendChild(o);
+  });
+  if(state.arr!==''&&!arrs[state.arr])state.arr='';
+}
+
+function renderTabs(){
   ['tennis','padel','foot'].forEach(function(sp){
     var c=document.getElementById('cnt-'+sp);
-    if(!c)return;
-    c.textContent = DS[sp] ? counts[sp]+' créneaux' : (sp==='foot'?'—':'bientôt');
+    c.textContent=DS[sp]?DS[sp].total.toLocaleString('fr-FR')+' créneaux':(sp==='foot'?'—':'bientôt');
   });
-  document.querySelectorAll('.sportbtn').forEach(function(b){
+  document.querySelectorAll('.tab').forEach(function(b){
     b.classList.toggle('on',b.getAttribute('data-sport')===state.sport);
   });
 }
 
-function render(){renderDays();renderList();syncFilters();renderChrome();renderSportbar();persist();}
-
-function syncFilters(){
-  document.getElementById('fCov').classList.toggle('on',state.cov);
-  document.getElementById('fEcl').classList.toggle('on',state.ecl);
-  document.getElementById('fSoir').classList.toggle('on',state.soir);
-  document.getElementById('fArr').value=state.arr;
-  document.getElementById('fSurf').value=state.surf;
-}
-
-function rebuildFilterOptions(){
-  var D=ds();
-  var fa=document.getElementById('fArr'),fs=document.getElementById('fSurf');
-  fa.length=1;fs.length=1;
-  if(!D)return;
-  var arrs={},surfs={};
-  D.days.forEach(function(d){(D.slots[d]||[]).forEach(function(s){arrs[D.sites[s.s].arr]=1;surfs[s.surf]=1;});});
-  Object.keys(arrs).map(Number).sort(function(a,b){return a-b;}).forEach(function(a){
-    var o=document.createElement('option');o.value=String(a);o.textContent=a>0&&a<=20?a+'ᵉ arr.':'Hors Paris';fa.appendChild(o);
-  });
-  Object.keys(surfs).sort().forEach(function(su){
-    var o=document.createElement('option');o.value=su;o.textContent=su;fs.appendChild(o);
-  });
-}
+function render(){applyAccent();renderMaj();renderHero();renderDays();renderFilters();renderList();renderTabs();persist();}
 
 function switchSport(sp){
   if(sp===state.sport)return;
-  state.sport=sp;state.arr='';state.surf='';state.open={};
+  state.sport=sp;state.arr='';state.open=null;
   var D=ds();
-  state.day = D ? (D.days.find(function(day){return (D.slots[day]||[]).length>0;})||D.days[0]) : null;
-  rebuildFilterOptions();render();
+  state.day=D?(D.days.find(function(day){return (D.slots[day]||[]).length>0;})||D.days[0]):null;
+  rebuildArrOptions();render();
 }
 
-function initFilters(){
-  document.getElementById('fArr').addEventListener('change',function(){state.arr=this.value;render();});
-  document.getElementById('fSurf').addEventListener('change',function(){state.surf=this.value;render();});
-  document.getElementById('fCov').addEventListener('click',function(){state.cov=!state.cov;render();});
-  document.getElementById('fEcl').addEventListener('click',function(){state.ecl=!state.ecl;render();});
-  document.getElementById('fSoir').addEventListener('click',function(){state.soir=!state.soir;render();});
-  document.querySelectorAll('.sportbtn').forEach(function(b){
-    b.addEventListener('click',function(){switchSport(b.getAttribute('data-sport'));});
-  });
-}
-
-function renderUpdated(){
-  var u=document.getElementById('updated');u.textContent='';
-  var D=ds();if(!D||!D.generated_at){return;}
-  var gen=new Date(D.generated_at);
-  var hrs=(Date.now()-gen.getTime())/36e5;
-  var opts={weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'};
-  u.appendChild(document.createTextNode('Mis à jour '+gen.toLocaleDateString('fr-FR',opts)));
-  if(hrs>30){u.appendChild(el('span','stale','données anciennes'));}
-}
+document.getElementById('fArr').addEventListener('change',function(){state.arr=this.value;state.open=null;render();});
+document.getElementById('fCov').addEventListener('click',function(){state.cov=!state.cov;render();});
+document.getElementById('fSoir').addEventListener('click',function(){state.soir=!state.soir;render();});
+document.querySelectorAll('.tab').forEach(function(b){
+  b.addEventListener('click',function(){switchSport(b.getAttribute('data-sport'));});
+});
 
 function loadJSON(path){return fetch(path,{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
 
 Promise.all([loadJSON('data.json'),loadJSON('padel.json'),loadJSON('foot.json')]).then(function(res){
   DS.tennis=res[0];DS.padel=res[1];DS.foot=res[2];
-  if(!DS[state.sport])state.sport='tennis';
-  initFilters();
+  if(!DS[state.sport]&&state.sport!=='foot')state.sport='tennis';
   var D=ds();
-  state.day = D ? (D.days.find(function(day){return (D.slots[day]||[]).length>0;})||D.days[0]) : null;
-  rebuildFilterOptions();
-  renderUpdated();
+  state.day=D?(D.days.find(function(day){return (D.slots[day]||[]).length>0;})||D.days[0]):null;
+  rebuildArrOptions();
   render();
-}).catch(function(){
-  var list=document.getElementById('list');
-  var em=el('div','empty');
-  em.appendChild(el('span','big','Données indisponibles'));
-  em.appendChild(el('span',null,'Le fichier de créneaux n’a pas pu être chargé. Réessayez plus tard.'));
-  list.appendChild(em);
 });
-
-// re-render "updated" line when switching sport
-var _r=render;render=function(){_r();renderUpdated();};
 })();
 </script>
-
 </body></html>
