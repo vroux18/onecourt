@@ -1,5 +1,5 @@
 /* OneCourt service worker — shell en cache, données réseau d'abord. */
-var CACHE = 'onecourt-v2';
+var CACHE = 'onecourt-v3';
 var SHELL = ['./', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', function (e) {
