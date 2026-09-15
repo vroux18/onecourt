@@ -149,7 +149,7 @@ def main():
         "total": total,
         "errors": errors,
     }
-    with open("data.json", "w") as f:
+    with open("data.json", "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
     print(f"OK: {total} créneaux, {len(errors)} erreurs, {time.time()-t0:.0f}s", file=sys.stderr)
 
