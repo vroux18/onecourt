@@ -188,7 +188,8 @@ select.chip{appearance:none;-webkit-appearance:none;padding-right:28px;backgroun
 .row .book{font-weight:800;font-size:11px;background:var(--a);color:var(--a-dark);border-radius:99px;padding:8px 13px;white-space:nowrap;text-decoration:none;flex:none}
 .sheet-note{font-size:10px;color:var(--ink-dim);margin-top:12px}
 /* origine (géoloc / adresse) */
-.originbtn{position:fixed;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:55;display:flex;align-items:center;gap:6px;background:#12171add;border:1px solid var(--line);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-radius:99px;padding:10px 14px;font-weight:700;font-size:11.5px;color:var(--ink);cursor:pointer;font-family:inherit;max-width:60vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.originbtn{position:fixed;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:55;display:flex;align-items:center;gap:6px;background:#12171add;border:1px solid var(--line);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-radius:99px;padding:10px 14px;font-weight:700;font-size:11.5px;color:var(--ink);cursor:pointer;font-family:inherit;max-width:55vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mapfab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:55;display:flex;align-items:center;gap:6px;background:var(--a);border:none;border-radius:99px;padding:11px 15px;font-weight:800;font-size:11.5px;color:var(--a-dark);cursor:pointer;font-family:inherit;box-shadow:0 4px 18px #000a}
 .originpanel{position:fixed;inset:0;z-index:70;background:#000a;display:flex;flex-direction:column;justify-content:flex-end}
 .originsheet{background:#10171a;border-top:1px solid var(--line);border-radius:26px 26px 0 0;padding:18px 22px calc(26px + env(safe-area-inset-bottom,0px))}
 .originsheet .grab{width:38px;height:4px;border-radius:2px;background:#2a3236;margin:0 auto 14px}
@@ -237,6 +238,7 @@ button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible{ou
   <main id="list" class="clubs"></main>
 </div>
 <button class="originbtn" id="originbtn" type="button">📍 Ma position</button>
+<button class="mapfab" id="mapfab" type="button" hidden>🗺️ Carte</button>
 <div class="originpanel" id="originpanel" hidden>
   <div class="originsheet">
     <div class="grab"></div>
@@ -778,7 +780,12 @@ document.querySelector('.wordmark').addEventListener('click',function(){
 // origine : géoloc ou adresse
 function renderOrigin(){
   document.getElementById('originbtn').textContent='📍 '+(pos?(origin.label||'Ma position'):'Ma position');
+  document.getElementById('mapfab').hidden=state.view!=='list'||!ds();
 }
+document.getElementById('mapfab').addEventListener('click',function(){
+  var agg=siteAgg();
+  if(agg.ids.length)openMap(agg.ids[0]);
+});
 document.getElementById('originbtn').addEventListener('click',function(){
   history.pushState({oc:'origin'},'');
   document.getElementById('originpanel').hidden=false;
