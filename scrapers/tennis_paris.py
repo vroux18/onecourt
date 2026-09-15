@@ -19,7 +19,7 @@ BASE = "https://tennis.paris.fr/tennis/jsp/site/Portal.jsp"
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36"
 COATINGS = ["96", "2095", "94", "1324", "2016", "92"]
 CHUNK = 8
-DAYS = 7
+DAYS = 8
 DELAY = 0.7
 
 jar = CookieJar()

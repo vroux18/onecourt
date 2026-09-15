@@ -17,7 +17,7 @@ from datetime import date, datetime, timedelta, timezone
 
 API = "https://www.anybuddyapp.com/api/v1/availabilities"
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36"
-DAYS = 7
+DAYS = 8
 DELAY = 0.7
 
 # 12 clubs Paris + proche couronne. slug = segment /club/<slug>/padel de l'URL Anybuddy.
